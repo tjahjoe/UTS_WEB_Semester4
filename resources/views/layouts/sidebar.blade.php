@@ -29,10 +29,10 @@
         </a>
       </li>
       <li class="nav-item">
-        <a href="{{ url('/user') }}" class="nav-link {{ ($activeMenu == 'user') ?
+        <a href="{{ url('/akun') }}" class="nav-link {{ ($activeMenu == 'akun') ?
   'active' : '' }}">
           <i class="nav-icon far fa-user"></i>
-          <p>Data User</p>
+          <p>Data Akun</p>
         </a>
       </li>
       <li class="nav-item">

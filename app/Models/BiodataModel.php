@@ -12,7 +12,7 @@ class BiodataModel extends Model
 
     protected $table = 'biodata';
     protected $primaryKey = 'id_biodata';
-    protected $fillable = ['nama', 'umur', 'alamat', 'gender'];
+    protected $fillable = ['id_akun', 'nama', 'umur', 'alamat', 'gender'];
     public function akun(): BelongsTo
     {
         return $this->belongsTo(AkunModel::class, 'id_akun', 'id_akun');

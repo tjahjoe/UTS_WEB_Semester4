@@ -6,6 +6,7 @@ use App\Models\AkunModel;
 use App\Models\BiodataModel;
 use Yajra\DataTables\DataTables;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class AkunController extends Controller
 {
@@ -20,14 +21,14 @@ class AkunController extends Controller
             'title' => 'Daftar Akun yang terdaftar dalam sistem'
         ];
 
-        $activeMenu = 'Akun';
+        $activeMenu = 'akun';
 
-        $akun = BiodataModel::with('akun:id_akun,email,tingkat,status')->get(['id_akun', 'nama']);
+        $query = BiodataModel::with('akun:id_akun,email,tingkat,status')->get(['id_akun', 'nama']);
         // $akun = BiodataModel::select('id_akun', 'nama')->with('akun:id_akun,email')->get();
 
         // return response()->json($akun);
 
-        return view('user.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'akun' => $akun, 'activeMenu' => $activeMenu]);
+        return view('user.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'akun' => $query, 'activeMenu' => $activeMenu]);
     }
 
     public function list(Request $request)
@@ -42,8 +43,8 @@ class AkunController extends Controller
         return DataTables::of($query)
             ->addIndexColumn()
             ->addColumn('aksi', function ($akun) {
-                $btn = '<button onclick="modalAction(\'' . url('/akun/' . $akun->id_akun . '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button> ';
-                $btn .= '<button onclick="modalAction(\'' . url('/akun/' . $akun->id_akun . '/edit_ajax') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
+                $btn = '<button onclick="modalAction(\'' . url('/akun/' . $akun->id_akun . '/detail_data') . '\')" class="btn btn-info btn-sm">Detail</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/akun/' . $akun->id_akun . '/edit_data') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('/akun/' . $akun->id_akun . '/delete_ajax') . '\')" class="btn btn-danger btn-sm">Hapus</button>';
                 return $btn;
             })
@@ -70,12 +71,107 @@ class AkunController extends Controller
 
 //     }
 
-//     public function create_ajax()
-//     {
-//         $level = LevelModel::select('level_id', 'level_nama')->get();
+    public function get_tambah_data()
+    {
+        $option = [
+            'tingkat' => ['admin', 'user'],
+            'gender' => ['L', 'P'],
+        ];
+        // return response()->json($option);
 
-//         return view('user.create_ajax')->with('level', $level);
-//     }
+        return view('user.tambah_data')->with('option', $option);   
+    }
+
+    public function post_tambah_data(Request $request){
+
+        $validated = $request->validate([
+            'email' => 'required|email|max:100|unique:akun,email',
+            'password' => 'required|min:6|max:255',
+            'tingkat' => 'required|in:admin,user',
+            'nama' => 'required|max:100',
+            'umur' => 'required|integer|min:1|max:150',
+            'alamat' => 'required',
+            'gender' => 'required|in:L,P',
+        ]);
+    
+        $akun = AkunModel::create([
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'tingkat' => $validated['tingkat'],
+            'status' => 'aktif',
+        ]);
+
+        BiodataModel::create([
+            'id_akun' => $akun->id_akun,
+            'nama' => $validated['nama'],
+            'umur' => $validated['umur'],
+            'alamat' => $validated['alamat'],
+            'gender' => $validated['gender'],
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Data user berhasil disimpan'
+        ]);
+    }
+
+    public function get_edit_data(string $id)
+    {
+        $query = BiodataModel::with('akun:id_akun,email,tingkat,status')
+        ->select('id_akun', 'nama', 'umur', 'alamat', 'gender')
+        ->where('id_akun', $id)
+        ->first();
+
+        $option = [
+            'tingkat' => ['admin', 'user'],
+            'status' => ['aktif', 'nonaktif'],
+            'gender' => ['L', 'P'],
+        ];
+
+        $breadcrumb = (object) [
+            'title' => 'Edit Akun',
+            'list' => ['Home', 'Akun', 'Edit']
+        ];
+
+        $page = (object) [
+            'title' => 'Edit Akun'
+        ];
+
+        $activeMenu = 'akun';
+        return view('user.edit_data', ['breadcrumb' => $breadcrumb, 'page' => $page, 'akun' => $query, 'option' => $option, 'activeMenu' => $activeMenu]);
+    }
+
+    public function put_edit_data(Request $request, $id){
+        $validated = $request->validate([
+            'email' => 'required|email|max:100|unique:akun,email',
+            'password' => 'required|min:6|max:255',
+            'tingkat' => 'required|in:admin,user',
+            'nama' => 'required|max:100',
+            'umur' => 'required|integer|min:1|max:150',
+            'alamat' => 'required',
+            'gender' => 'required|in:L,P',
+        ]);
+
+        $akun = AkunModel::find($id)->update([
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'tingkat' => $validated['tingkat'],
+            'status' => 'aktif',
+        ]);
+
+        BiodataModel::where('id_akun', $id)->update([
+            'id_akun' => $akun->id_akun,
+            'nama' => $validated['nama'],
+            'umur' => $validated['umur'],
+            'alamat' => $validated['alamat'],
+            'gender' => $validated['gender'],
+        ]);
+        
+        return response()->json([
+            'status' => true,
+            'message' => 'Data user berhasil disimpan'
+        ]);
+    }
 
 //     public function store(Request $request)
 //     {
@@ -142,31 +238,31 @@ class AkunController extends Controller
 //         return view('user.show', ['breadcrumb' => $breadcrumb, 'page' => $page, 'user' => $user, 'activeMenu' => $activeMenu]);
 //     }
 
-//     public function edit(string $id)
-//     {
-//         $user = UserModel::find($id);
-//         $level = LevelModel::all();
+    // public function edit(string $id)
+    // {
+    //     $user = UserModel::find($id);
+    //     $level = LevelModel::all();
 
-//         $breadcrumb = (object) [
-//             'title' => 'Edit User',
-//             'list' => ['Home', 'User', 'Edit']
-//         ];
+    //     $breadcrumb = (object) [
+    //         'title' => 'Edit User',
+    //         'list' => ['Home', 'User', 'Edit']
+    //     ];
 
-//         $page = (object) [
-//             'title' => 'Edit user'
-//         ];
+    //     $page = (object) [
+    //         'title' => 'Edit user'
+    //     ];
 
-//         $activeMenu = 'user';
-//         return view('user.edit', ['breadcrumb' => $breadcrumb, 'page' => $page, 'user' => $user, 'level' => $level, 'activeMenu' => $activeMenu]);
-//     }
+    //     $activeMenu = 'user';
+    //     return view('user.edit', ['breadcrumb' => $breadcrumb, 'page' => $page, 'user' => $user, 'level' => $level, 'activeMenu' => $activeMenu]);
+    // }
 
-//     public function edit_ajax(string $id)
-//     {
-//         $user = UserModel::find($id);
-//         $level = LevelModel::select('level_id', 'level_nama')->get();
+    // public function edit_ajax(string $id)
+    // {
+    //     $user = UserModel::find($id);
+    //     $level = LevelModel::select('level_id', 'level_nama')->get();
 
-//         return view('user.edit_ajax', ['user' => $user, 'level' => $level]);
-//     }
+    //     return view('user.edit_ajax', ['user' => $user, 'level' => $level]);
+    // }
 
 //     public function update(Request $request, string $id)
 //     {
@@ -224,13 +320,21 @@ class AkunController extends Controller
 //             }
 //         }
 //         return redirect('/');
-//     }
+    //     }
+    public function get_detail_data(string $id){
+        $query = BiodataModel::with('akun:id_akun,email,tingkat,status')
+        ->select('id_akun', 'nama', 'umur', 'alamat', 'gender')
+        ->where('id_akun', $id)
+        ->first();
 
-//     public function confirm_ajax(string $id){
-//         $user = UserModel::find($id);
+        $activeMenu = 'akun';
+        return view('user.detail_data', ['akun' => $query, 'activeMenu' => $activeMenu]);
+    }   
 
-//         return view('user.confirm_ajax', ['user' => $user]);
-//     }
+    // public function confirm_ajax(string $id){
+    //     $akun = AkunModel::find($id);
+    //     return view('user.show', ['akun' => $akun]);
+    // }
 
 //     public function delete_ajax(Request $request, $id){
 //         if ($request->ajax() || $request->wantsJson()) {

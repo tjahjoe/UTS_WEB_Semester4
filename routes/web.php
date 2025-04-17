@@ -22,20 +22,26 @@ use Illuminate\Support\Facades\Route;
 
 // Route::get('/', [BarangController::class, 'index']);
 Route::group(['prefix' => 'akun'], function(){
+    // Route::get('/create', [AkunController::class, 'create']);
+    // Route::post('/', [AkunController::class, 'store']);
+    // Route::get('/create_ajax', [AkunController::class, 'create_ajax']);
+    // Route::post('/ajax', [AkunController::class, 'store_ajax']);
+    // Route::get('/{id}', [AkunController::class, 'show']);
+    // Route::get('/{id}/edit', [AkunController::class, 'edit']);
+    // Route::put('/{id}', [AkunController::class, 'update']);
+    // Route::get('/{id}/edit_ajax', [AkunController::class, 'edit_ajax']);
+    // Route::put('/{id}/update_ajax', [AkunController::class, 'update_ajax']);
+    // Route::get('/{id}/delete_ajax', [AkunController::class, 'confirm_ajax']);
+    // Route::delete('/{id}/delete_ajax', [AkunController::class, 'delete_ajax']);
+    // Route::delete('/{id}', [AkunController::class, 'destroy']);
+    
     Route::get('/', [AkunController::class, 'index']);
     Route::post('/list', [AkunController::class, 'list']);
-    Route::get('/create', [AkunController::class, 'create']);
-    Route::post('/', [AkunController::class, 'store']);
-    Route::get('/create_ajax', [AkunController::class, 'create_ajax']);
-    Route::post('/ajax', [AkunController::class, 'store_ajax']);
-    Route::get('/{id}', [AkunController::class, 'show']);
-    Route::get('/{id}/edit', [AkunController::class, 'edit']);
-    Route::put('/{id}', [AkunController::class, 'update']);
-    Route::get('/{id}/edit_ajax', [AkunController::class, 'edit_ajax']);
-    Route::put('/{id}/update_ajax', [AkunController::class, 'update_ajax']);
-    Route::get('/{id}/delete_ajax', [AkunController::class, 'confirm_ajax']);
-    Route::delete('/{id}/delete_ajax', [AkunController::class, 'delete_ajax']);
-    Route::delete('/{id}', [AkunController::class, 'destroy']);
+    Route::get('/{id}/detail_data', [AkunController::class, 'get_detail_data']);
+    Route::get('/tambah_data', [AkunController::class, 'get_tambah_data']);
+    Route::post('/tambah_data', [AkunController::class, 'post_tambah_data']);
+    Route::get('/{id}/edit_data', [AkunController::class, 'get_edit_data']);
+    Route::put('/{id}/edit_data', [AkunController::class, 'put_edit_data']);
 });
 
 Route::group(['prefix' => 'barang'], function(){
