@@ -30,17 +30,17 @@
                 </div>
                 <div class="form-group">
                     <label>Nama</label>
-                    <input value="" type="nama" name="nama" id="nama" class="form-control" required>
+                    <input value="" type="text" name="nama" id="nama" class="form-control" required>
                     <small id="error-nama" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
                     <label>Umur</label>
-                    <input value="" type="umur" name="umur" id="umur" class="form-control" required>
+                    <input value="" type="text" name="umur" id="umur" class="form-control" required>
                     <small id="error-umur" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
                     <label>Alamat</label>
-                    <input value="" type="alamat" name="alamat" id="alamat" class="form-control" required>
+                    <input value="" type="text" name="alamat" id="alamat" class="form-control" required>
                     <small id="error-alamat" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">

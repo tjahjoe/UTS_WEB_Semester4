@@ -20,14 +20,7 @@
           <p>Dashboard</p>
         </a>
       </li>
-      <li class="nav-header">Data Pengguna</li>
-      <li class="nav-item">
-        <a href="{{ url('/level') }}" class="nav-link {{ ($activeMenu == 'level') ?
-  'active' : '' }} ">
-          <i class="nav-icon fas fa-layer-group"></i>
-          <p>Level User</p>
-        </a>
-      </li>
+      <li class="nav-header">Data Akun</li>
       <li class="nav-item">
         <a href="{{ url('/akun') }}" class="nav-link {{ ($activeMenu == 'akun') ?
   'active' : '' }}">
@@ -35,19 +28,12 @@
           <p>Data Akun</p>
         </a>
       </li>
-      <li class="nav-item">
-        <a href="{{ url('/supplier') }}" class="nav-link {{ ($activeMenu == 'supplier') ?
-  'active' : '' }}">
-          <i class="nav-icon far fa-user"></i>
-          <p>Data Supplier</p>
-        </a>
-      </li>
       <li class="nav-header">Data Barang</li>
       <li class="nav-item">
-        <a href="{{ url('/kategori') }}" class="nav-link {{ ($activeMenu ==
+        <a href="{{ url('/barang') }}" class="nav-link {{ ($activeMenu ==
   'kategori') ? 'active' : '' }} ">
           <i class="nav-icon far fa-bookmark"></i>
-          <p>Kategori Barang</p>
+          <p>Data Barang</p>
         </a>
       </li>
       <li class="nav-item">

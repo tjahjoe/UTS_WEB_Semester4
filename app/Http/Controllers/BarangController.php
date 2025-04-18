@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BarangModel;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\Validator;
 
 class BarangController extends Controller
 {
@@ -14,270 +17,144 @@ class BarangController extends Controller
         ];
 
         $page = (object) [
-            'title' => 'Daftar barang yang terdaftar dalam sistem'
+            'title' => 'Daftar Barang yang terdaftar dalam sistem'
         ];
 
         $activeMenu = 'barang';
 
-
         return view('barang.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
     }
 
-//     public function list(Request $request)
-//     {
-//         $barangs = BarangModel::select('barang_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual');
+    public function list(Request $request)
+    {
+        $query = BarangModel::get();
+
+        if ($request->id_bunga) {
+            $query->where('id_bunga', $request->id_bunga);
+        }
+
+        return DataTables::of($query)
+            ->addIndexColumn()
+            ->addColumn('aksi', function ($barang) {
+                $btn = '<button onclick="modalAction(\'' . url('/barang/' . $barang->id_bunga . '/detail_data') . '\')" class="btn btn-info btn-sm">Detail</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/barang/' . $barang->id_bunga . '/edit_data') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/barang/' . $barang->id_bunga . '/hapus_data') . '\')" class="btn btn-danger btn-sm">Hapus</button>';
+                return $btn;
+            })
+            ->rawColumns(['aksi'])
+            ->make(true);
+    }
 
 
+    public function get_tambah_data()
+    {
+        return view('barang.tambah_data');
+    }
 
-//         return DataTables::of($barangs)
-//             ->addIndexColumn()
-//             ->addColumn('aksi', function ($barang) {
+    public function post_tambah_data(Request $request)
+    {
 
-//                 //                 $btn = '<a href="' . url('/barang/' . $barang->barang_id) . '" class="btn btn-info btn-sm">Detail</a> ';
-    
-//                 //                 $btn .= '<a href="' . url('/barang/' . $barang->barang_id . '/edit') . '" class="btn btn-warning btn-sm">Edit</a> ';
-    
-//                 //                 $btn .= '<form class="d-inline-block" method="POST" action="' .
-    
-//                 //                     url('/barang/' . $barang->barang_id) . '">'
-    
-//                 //                     . csrf_field() . method_field('DELETE') .
-// //                     '<button type="submit" class="btn btn-danger btn-sm" onclick="return
-    
-//                 // confirm(\'Apakah Anda yakit menghapus data ini?\');">Hapus</button></form>';
-//                 $btn = '<button onclick="modalAction(\'' . url('/barang/' . $barang->barang_id .
+        $validated = $request->validate([
+            'nama' => 'required|min:2|max:100', 
+            'harga' => 'required|numeric|min:0.01',  
+            'stok' => 'required|integer|min:1',  
+            'deskripsi' => 'nullable|max:255'
+        ]);
 
-//                     '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button> ';
+        BarangModel::create([
+            'nama' => $validated['nama'],
+            'harga' => $validated['harga'],
+            'stok' => $validated['stok'],
+            'deskripsi' => $validated['deskripsi']
+        ]);
 
-//                 $btn .= '<button onclick="modalAction(\'' . url('/barang/' . $barang->barang_id .
+        return response()->json([
+            'status' => true,
+            'message' => 'Data berhasil disimpan'
+        ]);
+    }
 
-//                     '/edit_ajax') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
+    public function get_edit_data(string $id)
+    {
+        $query = BarangModel::find($id);
 
-//                 $btn .= '<button onclick="modalAction(\'' . url('/barang/' . $barang->barang_id .
+        return view('barang.edit_data', ['barang' => $query]);
+    }
 
-//                     '/delete_ajax') . '\')" class="btn btn-danger btn-sm">Hapus</button> ';
+    public function put_edit_data(Request $request, $id)
+    {
 
-//                 return $btn;
-//             })
-//             ->rawColumns(['aksi'])
-//             ->make(true);
-//     }
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'nama' => 'required|min:2|max:100', 
+            'harga' => 'required|numeric|min:0.01',  
+            'stok' => 'required|integer|min:1',  
+            'deskripsi' => 'nullable|max:255'
+            ];
 
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                \Log::error('Validator gagal:', $validator->errors()->toArray()); // Logging error
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi gagal',
+                    'msgfield' => $validator->errors()
+                ]);
+            }
 
-//     public function create()
-//     {
-//         $breadcrumb = (object) [
-//             'title' => 'Tambah Barang',
-//             'list' => ['Home', 'Barang', 'Tambah']
-//         ];
+            $barang = BarangModel::find($id);
+            if ($barang) {
+                $barang->update([
+                    'nama' => $request['nama'],
+                    'harga' => $request['harga'],
+                    'stok' => $request['stok'],
+                    'deskripsi' => $request['deskripsi'],
+                ]);
 
-//         $page = (object) [
-//             'title' => 'Tambah barang Baru'
-//         ];
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Data berhasil diupdate'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Data tidak ditemukan'
+                ]);
+            }
+        }
+        return redirect('/');
+    }
 
-//         $kategori = KategoriModel::all();
-//         $activeMenu = 'barang';
+    public function get_detail_data(string $id)
+    {
+        $query = BarangModel::find($id);
+        return view('barang.detail_data', ['barang' => $query]);
+    }
 
-//         return view('barang.create', ['breadcrumb' => $breadcrumb, 'kategori' => $kategori, 'page' => $page, 'activeMenu' => $activeMenu]);
+    public function get_hapus_data(string $id)
+    {
+        $query = BarangModel::where('id_bunga', $id)->first();
 
-//     }
+        return view('barang.hapus_data', ['barang' => $query]);
+    }
 
-//     public function create_ajax()
-//     {
-//         $kategori = KategoriModel::select('kategori_id', 'kategori_nama')->get();
-
-//         return view('barang.create_ajax')->with('kategori', $kategori);
-//     }
-
-//     public function store(Request $request)
-//     {
-//         $request->validate([
-//             'barang_kode' => 'required|string|max:100|unique:m_barang,barang_kode',
-//             'barang_nama' => 'required|string|max:100',
-//             'harga_beli' => 'required|integer',
-//             'harga_jual' => 'required|integer',
-//             'kategori_id' => 'required|integer'
-//         ]);
-
-//         BarangModel::create([
-//             'barang_kode' => $request->barang_kode,
-//             'barang_nama' => $request->barang_nama,
-//             'harga_beli' => $request->harga_beli,
-//             'harga_jual' => $request->harga_jual,
-//             'kategori_id' => $request->kategori_id
-//         ]);
-
-//         return redirect('/barang')->with('success', 'Data barang berhasil disimpan');
-//     }
-
-//     public function store_ajax(Request $request)
-//     {
-//         if ($request->ajax() || $request->wantsJson()) {
-//             $rules = [
-//                 'barang_kode' => 'required|string|max:100|unique:m_barang,barang_kode',
-//                 'barang_nama' => 'required|string|max:100',
-//                 'harga_beli' => 'required|integer',
-//                 'harga_jual' => 'required|integer',
-//                 'kategori_id' => 'required|integer'
-//             ];
-
-//             $validator = Validator::make($request->all(), $rules);
-
-//             if ($validator->fails()) {
-//                 return response()->json([
-//                     'status' => false,
-//                     'message' => 'Validasi Gagal',
-//                     'msgField' => $validator->errors()
-//                 ]);
-//             }
-
-//             BarangModel::create($request->all());
-//             return response()->json([
-//                 'status' => true,
-//                 'message' => 'Data barang berhasil disimpan'
-//             ]);
-//         }
-//         redirect('/');
-//     }
-
-//     public function show(string $id)
-//     {
-//         $barang = BarangModel::with('kategori')->find($id);
-//         // return response()->json($barang);
-//         $breadcrumb = (object) [
-//             'title' => 'Detail Barang',
-//             'list' => ['Home', 'Barang', 'Detail']
-//         ];
-
-//         $page = (object) [
-//             'title' => 'Detail barang'
-//         ];
-
-//         $activeMenu = 'barang';
-
-//         return view('barang.show', ['breadcrumb' => $breadcrumb, 'page' => $page, 'barang' => $barang, 'activeMenu' => $activeMenu]);
-//     }
-
-//     public function edit(string $id)
-//     {
-//         $barang = BarangModel::find($id);
-//         $kategori = KategoriModel::all();
-
-//         $breadcrumb = (object) [
-//             'title' => 'Edit Barang',
-//             'list' => ['Home', 'Barang', 'Edit']
-//         ];
-
-//         $page = (object) [
-//             'title' => 'Edit barang'
-//         ];
-
-//         $activeMenu = 'barang';
-//         return view('barang.edit', ['breadcrumb' => $breadcrumb, 'page' => $page, 'barang' => $barang, 'kategori' => $kategori, 'activeMenu' => $activeMenu]);
-//     }
-
-//     public function edit_ajax(string $id)
-//     {
-//         $barang = BarangModel::find($id);
-//         $kategori = KategoriModel::select('kategori_id', 'kategori_nama')->get();
-
-//         return view('barang.edit_ajax', ['barang' => $barang, 'kategori' => $kategori]);
-//     }
-
-//     public function update(Request $request, string $id)
-//     {
-//         $request->validate([
-//             'barang_kode' => 'required|string|max:100|unique:m_barang,barang_kode',
-//             'barang_nama' => 'required|string|max:100',
-//             'harga_beli' => 'required|integer',
-//             'harga_jual' => 'required|integer',
-//             'kategori_id' => 'required|integer'
-//         ]);
-
-//         BarangModel::find($id)->update([
-//             'barang_kode' => $request->barang_kode,
-//             'barang_nama' => $request->barang_nama,
-//             'harga_beli' => $request->harga_beli,
-//             'harga_jual' => $request->harga_jual,
-//             'kategori_id' => $request->kategori_id
-//         ]);
-
-//         return redirect('/barang')->with('success', 'Data Barang berhasil diubah');
-//     }
-
-//     public function update_ajax(Request $request, $id)
-//     {
-//         if ($request->ajax() || $request->wantsJson()) {
-//             $rules = [
-//                 'barang_kode' => 'required|string|max:100|unique:m_barang,barang_kode',
-//                 'barang_nama' => 'required|string|max:100',
-//                 'harga_beli' => 'required|integer',
-//                 'harga_jual' => 'required|integer',
-//                 'kategori_id' => 'required|integer'
-//             ];
-
-//             $validator = Validator::make($request->all(), $rules);
-//             if ($validator->fails()) {
-//                 return response()->json([
-//                     'status' => false,
-//                     'message' => 'Validaso gagal',
-//                     'msgfield' => $validator->errors()
-//                 ]);
-//             }
-//             $check = BarangModel::find($id);
-//             if ($check) {
-//                 $check->update($request->all());
-//                 return response()->json([
-//                     'status' => true,
-//                     'message' => 'Data berhasil diupdate'
-//                 ]);
-//             } else {
-//                 return response()->json([
-//                     'status' => false,
-//                     'message' => 'Data tidak ditemukan'
-//                 ]);
-//             }
-//         }
-//         return redirect('/');
-//     }
-
-//     public function confirm_ajax(string $id){
-//         $barang = BarangModel::find($id);
-
-//         return view('barang.confirm_ajax', ['barang' => $barang]);
-//     }
-
-//     public function delete_ajax(Request $request, $id){
-//         if ($request->ajax() || $request->wantsJson()) {
-//             $user = BarangModel::find($id);
-//             if ($user) {
-//                 $user->delete();
-//                 return response()->json([
-//                     'status' => true,
-//                     'message' => 'Data berhasil dihapus'
-//                 ]);
-//             }
-//         } else {
-//             return response()->json([
-//                 'status' => false,
-//                 'message' => 'Data tidak ditemukan'
-//             ]);
-//         }
-//         return redirect('/');
-//     }
-//     public function destroy(string $id)
-//     {
-//         $check = BarangModel::find($id);
-//         if (!$check) {
-//             return redirect('/barang')->with('error', 'Data Barang tidak ditemukan');
-//         }
-
-//         try {
-//             BarangModel::destroy($id);
-//             return redirect('/barang')->with('success', 'Data Barang berhasil dihapus');
-//         } catch (\Illuminate\Database\QueryException $e) {
-//             return redirect('/barang')->with('error', 'Data Barang gagal dihapus karena masih terdapat tabel lain yang terkait dengan data ini');
-//         }
-//     }
+        public function delete_hapus_data(Request $request, $id){
+        if ($request->ajax() || $request->wantsJson()) {
+            $barang = BarangModel::find($id);
+            if ($barang) {
+                $barang->delete();
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Data berhasil dihapus'
+                ]);
+            }
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data tidak ditemukan'
+            ]);
+        }
+        return redirect('/');
+    }
 
 }

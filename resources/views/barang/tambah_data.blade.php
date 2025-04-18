@@ -1,4 +1,4 @@
-<form action="{{ url('/barang/ajax') }}" method="POST" id="form-tambah">
+<form action="{{ url('/barang/tambah_data') }}" method="POST" id="form-tambah">
     @csrf
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -9,34 +9,24 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label>kategori Barang</label>
-                    <select name="kategori_id" id="kategori_id" class="form-control" required>
-                        <option value="">- Pilih Kategori -</option>
-                        @foreach($kategori as $k)
-                            <option value="{{ $k->kategori_id }}">{{ $k->kategori_nama }}</option>
-                        @endforeach
-                    </select>
-                    <small id="error-kategori_id" class="error-text form-text text-danger"></small>
+                    <label>Nama</label>
+                    <input value="" type="text" name="nama" id="nama" class="form-control" required>
+                    <small id="error-nama" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
-                    <label>Barang Kode</label>
-                    <input value="" type="text" name="barang_kode" id="barang_kode" class="form-control" required>
-                    <small id="error-barang_kode" class="error-text form-text text-danger"></small>
+                    <label>Harga</label>
+                    <input value="" type="text" name="harga" id="harga" class="form-control" required>
+                    <small id="error-harga" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
-                    <label>Barang Nama</label>
-                    <input value="" type="text" name="barang_nama" id="barang_nama" class="form-control" required>
-                    <small id="error-barang_nama" class="error-text form-text text-danger"></small>
+                    <label>Stok</label>
+                    <input value="" type="text" name="stok" id="stok" class="form-control" required>
+                    <small id="error-stok" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
-                    <label>Harga Beli</label>
-                    <input value="" type="text" name="harga_beli" id="harga_beli" class="form-control" required>
-                    <small id="error-harga_beli" class="error-text form-text text-danger"></small>
-                </div>
-                <div class="form-group">
-                    <label>Harga Jual</label>
-                    <input value="" type="text" name="harga_jual" id="harga_jual" class="form-control" required>
-                    <small id="error-harga_jual" class="error-text form-text text-danger"></small>
+                    <label>Deskripsi</label>
+                    <input value="" type="text" name="deskripsi" id="deskripsi" class="form-control" required>
+                    <small id="error-deskripsi" class="error-text form-text text-danger"></small>
                 </div>
             </div>
             <div class="modal-footer">
@@ -50,11 +40,10 @@
     $(document).ready(function () {
         $("#form-tambah").validate({
             rules: {
-                kategori_id: { required: true, number: true },
-                barang_kode: { required: true, maxlength: 100 },
-                barang_nama: { required: true, maxlength: 100 },
-                harga_beli: { required: true, number: true },
-                harga_jual: { required: true, number: true }
+                nama: { required: true, minlength: 2, maxlength: 100 },
+                harga: { required: true, number: true, min: 0.01 },
+                stok: { required: true, number: true, min: 1 },
+                deskripsi: { maxlength: 255 }
             },
             submitHandler: function (form) {
                 $.ajax({
@@ -69,7 +58,7 @@
                                 title: 'Berhasil',
                                 text: response.message
                             });
-                            databarang.ajax.reload();
+                            dataBarang.ajax.reload();
                         } else {
                             $('.error-text').text('');
                             $.each(response.msgField, function (prefix, val) {

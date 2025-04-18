@@ -6,7 +6,6 @@
 
                 <button type="button" class="close" data-dismiss="modal" aria- label="Close"><span
                         aria-hidden="true">&times;</span></button>
-
             </div>
             <div class="modal-body">
                 <div class="alert alert-danger">
@@ -18,68 +17,65 @@
         </div>
     </div>
 @else
-
-    <form action="{{ url('/barang/' . $barang->barang_id . '/delete_ajax') }}" method="POST" id="form-delete">
-
+    <form action="{{ url('/barang/' . $barang->id_bunga . '/edit_data') }}" method="POST" id="form-edit">
         @csrf
-        @method('DELETE')
+        @method('PUT')
         <div id="modal-master" class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Hapus Data Barang</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Data</h5>
 
                     <button type="button" class="close" data-dismiss="modal" aria- label="Close"><span
                             aria-hidden="true">&times;</span></button>
 
                 </div>
                 <div class="modal-body">
-                    <div class="alert alert-warning">
-                        <h5><i class="icon fas fa-ban"></i> Konfirmasi !!!</h5>
-                        Apakah Anda ingin menghapus data seperti di bawah ini?
+                    <div class="form-group">
+                        <label>Nama</label>
+                        <input value="{{ $barang->nama }}" type="text" name="nama" id="nama" class="form-control"
+                            required>
+                        <small id="error-nama" class="error-text form-text text-danger"></small>
                     </div>
-                    <table class="table table-sm table-bordered table-striped">
-                        <tr>
-                            <th class="text-right col-3">Kategori Nama :</th>
-                            <td class="col-9">{{ $barang->kategori->kategori_nama }}</td>
-                        </tr>
-                        <tr>
-                            <th class="text-right col-3">Barang Kode :</th>
-                            <td class="col-9">{{ $barang->barang_kode }}</td>
-                        </tr>
-                        <tr>
-                            <th class="text-right col-3">Barang Nama :</th>
-                            <td class="col-9">{{$barang->barang_nama }}</td>
-                        </tr>
-
-                        <tr>
-                            <th class="text-right col-3">Harga Beli :</th>
-                            <td class="col-9">{{ $barang->harga_beli }}</td>
-                        </tr>
-                        <tr>
-                            <th class="text-right col-3">Harga Jual :</th>
-                            <td class="col-9">{{ $barang->harga_jual }}</td>
-                        </tr>
-                    </table>
+                    <div class="form-group">
+                        <label>Harga</label>
+                        <input value="{{ $barang->harga }}" type="text" name="harga" id="harga" class="form-control"
+                            required>
+                        <small id="error-harga" class="error-text form-text text-danger"></small>
+                    </div>
+                    <div class="form-group">
+                        <label>Stok</label>
+                        <input value="{{ $barang->stok }}" type="text" name="stok" id="stok" class="form-control" required>
+                        <small id="error-stok" class="error-text form-text text-danger"></small>
+                    </div>
+                    <div class="form-group">
+                        <label>Deskripsi</label>
+                        <input value="{{ $barang->deskripsi }}" type="text" name="deskripsi" id="deskripsi" class="form-control"
+                            required>
+                        <small id="error-deskripsi" class="error-text form-text text-danger"></small>
+                    </div>
                 </div>
                 <div class="modal-footer">
-
                     <button type="button" data-dismiss="modal" class="btn btn-warning">Batal</button>
-
-                    <button type="submit" class="btn btn-primary">Ya, Hapus</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
                 </div>
             </div>
         </div>
     </form>
-    <script>
-        $(document).ready(function () {
-            $("#form-delete").validate({
-                rules: {},
+    <script>$(document).ready(function () {
+            $("#form-edit").validate({
+                rules: {
+                    nama: { required: true, minlength: 2, maxlength: 100 },
+                    harga: { required: true, number: true, min: 0.01 },
+                    stok: { required: true, number: true, min: 1 },
+                    deskripsi: { maxlength: 255 }
+                },
                 submitHandler: function (form) {
                     $.ajax({
                         url: form.action,
                         type: form.method,
                         data: $(form).serialize(),
                         success: function (response) {
+                            console.log(response.msgfield);
                             if (response.status) {
                                 $('#myModal').modal('hide');
                                 Swal.fire({
@@ -87,7 +83,7 @@
                                     title: 'Berhasil',
                                     text: response.message
                                 });
-                                databarang.ajax.reload();
+                                dataBarang.ajax.reload();
                             } else {
                                 $('.error-text').text('');
                                 $.each(response.msgField, function (prefix, val) {
