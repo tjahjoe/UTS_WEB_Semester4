@@ -45,6 +45,18 @@ Route::group(['prefix' => 'barang'], function(){
     Route::delete('/{id}/hapus_data', [BarangController::class, 'delete_hapus_data']);
 });
 
+Route::group(['prefix' => 'transaksi'], function(){
+    Route::get('/', [TransaksiController::class, 'index']);
+    Route::post('/list', [TransaksiController::class, 'list']);
+    Route::get('/{id}/detail_data', [TransaksiController::class, 'get_detail_data']);
+    Route::get('/tambah_data', [TransaksiController::class, 'get_tambah_data']);
+    Route::post('/tambah_data', [TransaksiController::class, 'post_tambah_data']);
+    Route::get('/{id}/edit_data', [TransaksiController::class, 'get_edit_data']);
+    Route::put('/{id}/edit_data', [TransaksiController::class, 'put_edit_data']);
+    Route::get('/{id}/hapus_data', [TransaksiController::class, 'get_hapus_data']);
+    Route::delete('/{id}/hapus_data', [TransaksiController::class, 'delete_hapus_data']);
+});
+
 // Route::group(['prefix' => 'barang'], function(){
 //     Route::get('/', [BarangController::class, 'index']);
 //     Route::post('/list', [BarangController::class, 'list']);

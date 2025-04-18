@@ -29,16 +29,16 @@ class BarangController extends Controller
     {
         $query = BarangModel::get();
 
-        if ($request->id_bunga) {
-            $query->where('id_bunga', $request->id_bunga);
+        if ($request->id_barang) {
+            $query->where('id_barang', $request->id_barang);
         }
 
         return DataTables::of($query)
             ->addIndexColumn()
             ->addColumn('aksi', function ($barang) {
-                $btn = '<button onclick="modalAction(\'' . url('/barang/' . $barang->id_bunga . '/detail_data') . '\')" class="btn btn-info btn-sm">Detail</button> ';
-                $btn .= '<button onclick="modalAction(\'' . url('/barang/' . $barang->id_bunga . '/edit_data') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
-                $btn .= '<button onclick="modalAction(\'' . url('/barang/' . $barang->id_bunga . '/hapus_data') . '\')" class="btn btn-danger btn-sm">Hapus</button>';
+                $btn = '<button onclick="modalAction(\'' . url('/barang/' . $barang->id_barang . '/detail_data') . '\')" class="btn btn-info btn-sm">Detail</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/barang/' . $barang->id_barang . '/edit_data') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/barang/' . $barang->id_barang . '/hapus_data') . '\')" class="btn btn-danger btn-sm">Hapus</button>';
                 return $btn;
             })
             ->rawColumns(['aksi'])
@@ -133,7 +133,7 @@ class BarangController extends Controller
 
     public function get_hapus_data(string $id)
     {
-        $query = BarangModel::where('id_bunga', $id)->first();
+        $query = BarangModel::where('id_barang', $id)->first();
 
         return view('barang.hapus_data', ['barang' => $query]);
     }

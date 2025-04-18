@@ -18,7 +18,6 @@
             <table class="table table-bordered table-striped table-hover table-sm" id="table_barang">
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Nama</th>
                         <th>Harga</th>
                         <th>Stok</th>
@@ -51,16 +50,11 @@
                     "dataType": "json",
                     "type": "POST",
                     "data": function(d){
-                        d.id_bunga = $('#id_bunga').val()
+                        d.id_barang = $('#id_barang').val()
                     }
                 },
                 columns: [
                     {
-                        data: "DT_RowIndex",
-                        className: "text-center",
-                        orderable: false,
-                        searchable: false
-                    }, {
                         data: "nama",
                         className: "",
                         orderable: true,
@@ -88,7 +82,7 @@
                     }
                 ]
             });
-            $('#id_bunga').on('change', function(){
+            $('#id_barang').on('change', function(){
                 dataBarang.ajax.reload();
             });
         });

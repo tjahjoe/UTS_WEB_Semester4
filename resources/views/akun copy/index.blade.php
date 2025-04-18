@@ -72,8 +72,8 @@
                     }, {
                         data: "akun.status",
                         className: "",
-                        orderable: true,
-                        searchable: true
+                        orderable: false,
+                        searchable: false
                     }, {
                         data: "aksi",
                         className: "",

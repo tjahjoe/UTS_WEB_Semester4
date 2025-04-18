@@ -17,7 +17,7 @@
         </div>
     </div>
 @else
-    <form action="{{ url('/barang/' . $barang->id_bunga . '/edit_data') }}" method="POST" id="form-edit">
+    <form action="{{ url('/barang/' . $barang->id_barang . '/edit_data') }}" method="POST" id="form-edit">
         @csrf
         @method('PUT')
         <div id="modal-master" class="modal-dialog modal-lg" role="document">

@@ -30,7 +30,7 @@ class AkunController extends Controller
     public function list(Request $request)
     {
         $query = BiodataModel::with('akun:id_akun,email,tingkat,status')
-            ->select(['id_akun', 'nama']);
+            ->select(['biodata.id_akun', 'nama']);
 
         if ($request->id_akun) {
             $query->where('id_akun', $request->id_akun);
@@ -96,8 +96,8 @@ class AkunController extends Controller
     public function get_edit_data(string $id)
     {
         $query = BiodataModel::with('akun:id_akun,email,tingkat,status')
-            ->select('id_akun', 'nama', 'umur', 'alamat', 'gender')
-            ->where('id_akun', $id)
+            ->select('biodata.id_akun', 'nama', 'umur', 'alamat', 'gender')
+            ->where('biodata.id_akun', $id)
             ->first();
 
         $option = [
@@ -172,8 +172,8 @@ class AkunController extends Controller
     public function get_detail_data(string $id)
     {
         $query = BiodataModel::with('akun:id_akun,email,tingkat,status')
-            ->select('id_akun', 'nama', 'umur', 'alamat', 'gender')
-            ->where('id_akun', $id)
+            ->select('biodata.id_akun', 'nama', 'umur', 'alamat', 'gender')
+            ->where('biodata.id_akun', $id)
             ->first();
 
         return view('akun.detail_data', ['akun' => $query]);
@@ -182,8 +182,8 @@ class AkunController extends Controller
     public function get_hapus_data(string $id)
     {
         $query = BiodataModel::with('akun:id_akun,email,tingkat,status')
-            ->select('id_akun', 'nama', 'umur', 'alamat', 'gender')
-            ->where('id_akun', $id)
+            ->select('biodata.id_akun', 'nama', 'umur', 'alamat', 'gender')
+            ->where('biodata.id_akun', $id)
             ->first();
 
         return view('akun.hapus_data', ['akun' => $query]);

@@ -1,4 +1,4 @@
-@empty($barang)
+@empty($akun)
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -13,19 +13,19 @@
                     <h5><i class="icon fas fa-ban"></i> Kesalahan!!!</h5>
                     Data yang anda cari tidak ditemukan
                 </div>
-                <a href="{{ url('/barang') }}" class="btn btn-warning">Kembali</a>
+                <a href="{{ url('/akun') }}" class="btn btn-warning">Kembali</a>
             </div>
         </div>
     </div>
 @else
 
-    <form action="{{ url('/barang/' . $barang->id_barang . '/hapus_data') }}" method="POST" id="form-delete">
+    <form action="{{ url('/akun/' . $akun->id_akun . '/hapus_data') }}" method="POST" id="form-delete">
         @csrf
         @method('DELETE')
         <div id="modal-master" class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Hapus Data Barang</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Hapus Data Akun</h5>
 
                     <button type="button" class="close" data-dismiss="modal" aria- label="Close"><span
                             aria-hidden="true">&times;</span></button>
@@ -38,24 +38,32 @@
                     </div>
                     <table class="table table-sm table-bordered table-striped">
                     <tr>
-                        <th class="text-right col-3">ID:</th>
-                        <td class="col-9">{{$barang->id_barang }}</td>
+                        <th class="text-right col-3">Level Pengguna :</th>
+                        <td class="col-9">{{$akun->akun->tingkat }}</td>
                     </tr>
                     <tr>
-                        <th class="text-right col-3">Nama:</th>
-                        <td class="col-9">{{$barang->nama }}</td>
+                        <th class="text-right col-3">Status:</th>
+                        <td class="col-9">{{$akun->akun->status }}</td>
                     </tr>
                     <tr>
-                        <th class="text-right col-3">Harga:</th>
-                        <td class="col-9">{{$barang->harga }}</td>
+                        <th class="text-right col-3">Email :</th>
+                        <td class="col-9">{{$akun->akun->email }}</td>
                     </tr>
                     <tr>
-                        <th class="text-right col-3">Stok:</th>
-                        <td class="col-9">{{$barang->stok }}</td>
+                        <th class="text-right col-3">Nama :</th>
+                        <td class="col-9">{{$akun->nama }}</td>
                     </tr>
                     <tr>
-                        <th class="text-right col-3">Deskripsi:</th>
-                        <td class="col-9">{{$barang->deskripsi }}</td>
+                        <th class="text-right col-3">Umur :</th>
+                        <td class="col-9">{{$akun->umur }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-3">Alamat :</th>
+                        <td class="col-9">{{$akun->alamat }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-3">Gender :</th>
+                        <td class="col-9">{{$akun->gender }}</td>
                     </tr>
                     </table>
                 </div>
@@ -83,7 +91,7 @@
                                     title: 'Berhasil',
                                     text: response.message
                                 });
-                                dataBarang.ajax.reload();
+                                dataAkun.ajax.reload();
                             } else {
                                 $('.error-text').text('');
                                 $.each(response.msgField, function (prefix, val) {
