@@ -37,9 +37,9 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
             <a href="{{ url('/') }}" class="brand-link">
-                <img src="{{ asset('adminlte/dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo"
+                <img src="{{ url('https://static.vecteezy.com/system/resources/thumbnails/008/482/608/small_2x/hand-drawn-flat-plants-in-the-potted-plants-illustration-isolated-on-white-background-free-vector.jpg') }}" alt="AdminLTE Logo"
                     class="brand-image img-circle elevation-3" style="opacity: .8">
-                <span class="brand-text font-weight-light">PWL - Starter Code</span>
+                <span class="brand-text font-weight-light">Plant Shop</span>
             </a>
 
             <!-- Sidebar -->

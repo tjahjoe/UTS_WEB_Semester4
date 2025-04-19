@@ -34,7 +34,7 @@
         <a href="{{ url('/pembelian') }}" class="nav-link {{ ($activeMenu ==
   'pembelian') ? 'active' : '' }} ">
           <i class="nav-icon fas fa-cash-register"></i>
-          <p>Transaksi Penjualan</p>
+          <p>Data Pembelian</p>
         </a>
       </li>
     </ul>

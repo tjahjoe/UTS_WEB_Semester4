@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 // Route::get('/', function () {
 //     // return view('welcome');
 // });
-Route::get('/', [PembelianController::class, 'tes']);
+Route::get('/', [AkunController::class, 'index']);
 // Route::get('/', [BarangController::class, 'index']);
 Route::group(['prefix' => 'akun'], function(){
     Route::get('/', [AkunController::class, 'index']);
