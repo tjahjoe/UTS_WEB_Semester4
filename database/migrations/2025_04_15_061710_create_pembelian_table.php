@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('biodata', function (Blueprint $table) {
-            $table->id('id_biodata');
-            $table->unsignedBigInteger('id_akun')->unique();
-            $table->string('nama', 100);
-            $table->integer('umur');
-            $table->text('alamat');
-            $table->enum('gender', ['L', 'P']);
+        Schema::create('pembelian', function (Blueprint $table) {
+            $table->id('id_pembelian');
+            $table->unsignedBigInteger('id_akun');
+            $table->enum('status', ['menunggu', 'diproses', 'selesai', 'gagal']);
+            $table->decimal('total', 10, 2);
+            $table->timestamp('tanggal_pembelian')->useCurrent();
             $table->timestamps();
 
             $table->foreign('id_akun')->references('id_akun')->on('akun')->onDelete('cascade');
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('biodata');
+        Schema::dropIfExists('pembelian');
     }
 };

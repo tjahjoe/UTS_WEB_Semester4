@@ -1,4 +1,4 @@
-@empty($akun)
+@empty($pembelian)
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -13,19 +13,19 @@
                     <h5><i class="icon fas fa-ban"></i> Kesalahan!!!</h5>
                     Data yang anda cari tidak ditemukan
                 </div>
-                <a href="{{ url('/akun') }}" class="btn btn-warning">Kembali</a>
+                <a href="{{ url('/pembelian') }}" class="btn btn-warning">Kembali</a>
             </div>
         </div>
     </div>
 @else
 
-    <form action="{{ url('/akun/' . $akun->id_akun . '/hapus_data') }}" method="POST" id="form-delete">
+    <form action="{{ url('/pembelian/' . $pembelian->id_pembelian . '/hapus_data') }}" method="POST" id="form-delete">
         @csrf
         @method('DELETE')
         <div id="modal-master" class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Hapus Data Akun</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Hapus Data Pembelian</h5>
 
                     <button type="button" class="close" data-dismiss="modal" aria- label="Close"><span
                             aria-hidden="true">&times;</span></button>
@@ -38,34 +38,46 @@
                     </div>
                     <table class="table table-sm table-bordered table-striped">
                     <tr>
-                        <th class="text-right col-3">Level Pengguna :</th>
-                        <td class="col-9">{{$akun->akun->tingkat }}</td>
+                        <th class="text-right col-3">ID Pembelian :</th>
+                        <td class="col-9">{{ $pembelian->id_pembelian }}</td>
                     </tr>
                     <tr>
-                        <th class="text-right col-3">Status:</th>
-                        <td class="col-9">{{$akun->akun->status }}</td>
+                        <th class="text-right col-3">Status :</th>
+                        <td class="col-9">{{ $pembelian->status }}</td>
                     </tr>
                     <tr>
                         <th class="text-right col-3">Email :</th>
-                        <td class="col-9">{{$akun->akun->email }}</td>
+                        <td class="col-9">{{ $pembelian->akun->email }}</td>
                     </tr>
                     <tr>
-                        <th class="text-right col-3">Nama :</th>
-                        <td class="col-9">{{$akun->nama }}</td>
+                        <th class="text-right col-3 align-top" rowspan="{{ count($pembelian->transaksi) + 2 }}">Barang :
+                        </th>
+                        <td class="col-9 p-0">
+                            <table class="table table-sm table-bordered table-striped">
+                                <thead style="background-color: silver;">
+                                    <tr>
+                                        <th>ID Barang</th>
+                                        <th>Nama Barang</th>
+                                        <th>Harga</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($pembelian->transaksi as $transaksi)
+                                        <tr>
+                                            <td>{{ $transaksi->id_barang }}</td>
+                                            <td>{{ $transaksi->barang->nama ?? '-' }}</td>
+                                            <td>{{ $transaksi->harga }}</td>
+                                        </tr>
+                                    @endforeach
+                                    <tr>
+                                        <td colspan="2" class="text-right"><strong>Total :</strong></td>
+                                        <td><strong>{{ $pembelian->total }}</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
                     </tr>
-                    <tr>
-                        <th class="text-right col-3">Umur :</th>
-                        <td class="col-9">{{$akun->umur }}</td>
-                    </tr>
-                    <tr>
-                        <th class="text-right col-3">Alamat :</th>
-                        <td class="col-9">{{$akun->alamat }}</td>
-                    </tr>
-                    <tr>
-                        <th class="text-right col-3">Gender :</th>
-                        <td class="col-9">{{$akun->gender }}</td>
-                    </tr>
-                    </table>
+                </table>
                 </div>
                 <div class="modal-footer">
                     <button type="button" data-dismiss="modal" class="btn btn-warning">Batal</button>
@@ -91,7 +103,7 @@
                                     title: 'Berhasil',
                                     text: response.message
                                 });
-                                dataAkun.ajax.reload();
+                                dataPembelian.ajax.reload();
                             } else {
                                 $('.error-text').text('');
                                 $.each(response.msgField, function (prefix, val) {

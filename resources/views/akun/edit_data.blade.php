@@ -35,7 +35,7 @@
                         <select name="tingkat" id="tingkat" class="form-control" required>
                             <option value="">- Pilih Tingkat -</option>
                             @foreach($option['tingkat'] as $opt)
-                                <option {{ ($opt == $akun->akun->tingkat) ? 'selected' : '' }} value="{{ $opt }}">
+                                <option {{ ($opt == $akun->tingkat) ? 'selected' : '' }} value="{{ $opt }}">
                                     {{ $opt }}
                                 </option>
                             @endforeach
@@ -47,7 +47,7 @@
                         <select name="status" id="status" class="form-control" required>
                             <option value="">- Pilih Status -</option>
                             @foreach($option['status'] as $opt)
-                                <option {{ ($opt == $akun->akun->status) ? 'selected' : '' }} value="{{ $opt }}">
+                                <option {{ ($opt == $akun->status) ? 'selected' : '' }} value="{{ $opt }}">
                                     {{ $opt }}
                                 </option>
                             @endforeach
@@ -56,7 +56,7 @@
                     </div>
                     <div class="form-group">
                         <label>Email</label>
-                        <input value="{{ $akun->akun->email }}" type="email" name="email" id="email" class="form-control" required>
+                        <input value="{{ $akun->email }}" type="email" name="email" id="email" class="form-control" required>
                         <small id="error-email" class="error-text form-text text-danger"></small>
                     </div>
                     <div class="form-group">
@@ -67,17 +67,17 @@
                     </div>
                     <div class="form-group">
                         <label>Nama</label>
-                        <input value="{{ $akun->nama }}" type="text" name="nama" id="nama" class="form-control" required>
+                        <input value="{{ $akun->biodata->nama }}" type="text" name="nama" id="nama" class="form-control" required>
                         <small id="error-nama" class="error-text form-text text-danger"></small>
                     </div>
                     <div class="form-group">
                         <label>Umur</label>
-                        <input value="{{ $akun->umur }}" type="text" name="umur" id="umur" class="form-control" required>
+                        <input value="{{ $akun->biodata->umur }}" type="text" name="umur" id="umur" class="form-control" required>
                         <small id="error-umur" class="error-text form-text text-danger"></small>
                     </div>
                     <div class="form-group">
                         <label>Alamat</label>
-                        <input value="{{ $akun->alamat }}" type="text" name="alamat" id="alamat" class="form-control" required>
+                        <input value="{{ $akun->biodata->alamat }}" type="text" name="alamat" id="alamat" class="form-control" required>
                         <small id="error-alamat" class="error-text form-text text-danger"></small>
                     </div>
                     <div class="form-group">
@@ -85,7 +85,7 @@
                         <select name="gender" id="gender" class="form-control" required>
                             <option value="">- Pilih Gender -</option>
                             @foreach($option['gender'] as $opt)
-                                <option {{ ($opt == $akun->gender) ? 'selected' : '' }} value="{{ $opt }}">
+                                <option {{ ($opt == $akun->biodata->gender) ? 'selected' : '' }} value="{{ $opt }}">
                                     {{ $opt }}
                                 </option>
                             @endforeach

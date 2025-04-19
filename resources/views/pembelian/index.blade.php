@@ -1,12 +1,6 @@
 @extends('layouts.template')
 @section('content')
     <div class="card card-outline card-primary">
-        <div class="card-header">
-            <h3 class="card-title">{{ $page->title }}</h3>
-            <div class="card-tools">
-                <button onclick="modalAction('{{ url('akun/tambah_data') }}')" class="btn btn-sm btn-success mt-1">Tambah Data</button>
-            </div>
-        </div>
         <div class="card-body">
             @if (session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
@@ -15,13 +9,13 @@
             @if (session('error'))
                 <div class="alert alert-danger">{{ session('error') }}</div>
             @endif
-            <table class="table table-bordered table-striped table-hover table-sm" id="table_akun">
+            <table class="table table-bordered table-striped table-hover table-sm" id="table_pembelian">
                 <thead>
                     <tr>
+                        <th>ID Pembelian</th>
                         <th>Email</th>
-                        <th>Nama</th>
-                        <th>Tingkat</th>
                         <th>Status</th>
+                        <th>Total</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -41,39 +35,39 @@
                 $('#myModal').modal('show');
             });
         }
-        var dataAkun;
+        var dataPembelian;
         $(document).ready(function () {
-            dataAkun = $('#table_akun').DataTable({
+            dataPembelian = $('#table_pembelian').DataTable({
                 serverSide: true,
                 ajax: {
-                    "url": "{{ url('akun/list') }}",
+                    "url": "{{ url('pembelian/list') }}",
                     "dataType": "json",
                     "type": "POST",
                     "data": function(d){
-                        d.id_akun = $('#id_akun').val()
+                        d.id_pembelian = $('#id_pembelian').val()
                     }
                 },
                 columns: [
                     {
+                        data: "id_pembelian",
+                        className: "",
+                        orderable: true,
+                        searchable: true
+                    }, {
                         data: "akun.email",
                         className: "",
                         orderable: true,
                         searchable: true
                     }, {
-                        data: "nama",
+                        data: "status",
                         className: "",
                         orderable: true,
                         searchable: true
                     }, {
-                        data: "akun.tingkat",
+                        data: "total",
                         className: "",
                         orderable: true,
                         searchable: true
-                    }, {
-                        data: "akun.status",
-                        className: "",
-                        orderable: false,
-                        searchable: false
                     }, {
                         data: "aksi",
                         className: "",
@@ -82,8 +76,8 @@
                     }
                 ]
             });
-            $('#id_akun').on('change', function(){
-                dataAkun.ajax.reload();
+            $('#id_pembelian').on('change', function(){
+                dataPembelian.ajax.reload();
             });
         });
     </script>

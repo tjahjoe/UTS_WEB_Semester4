@@ -55,22 +55,22 @@
                 },
                 columns: [
                     {
-                        data: "akun.email",
+                        data: "email",
                         className: "",
                         orderable: true,
                         searchable: true
                     }, {
-                        data: "nama",
+                        data: "biodata.nama",
                         className: "",
                         orderable: true,
                         searchable: true
                     }, {
-                        data: "akun.tingkat",
+                        data: "tingkat",
                         className: "",
                         orderable: true,
                         searchable: true
                     }, {
-                        data: "akun.status",
+                        data: "status",
                         className: "",
                         orderable: true,
                         searchable: true

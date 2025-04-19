@@ -31,31 +31,31 @@
                 <table class="table table-sm table-bordered table-striped">
                     <tr>
                         <th class="text-right col-3">Level Pengguna :</th>
-                        <td class="col-9">{{$akun->akun->tingkat }}</td>
+                        <td class="col-9">{{$akun->tingkat }}</td>
                     </tr>
                     <tr>
                         <th class="text-right col-3">Status:</th>
-                        <td class="col-9">{{$akun->akun->status }}</td>
+                        <td class="col-9">{{$akun->status }}</td>
                     </tr>
                     <tr>
                         <th class="text-right col-3">Email :</th>
-                        <td class="col-9">{{$akun->akun->email }}</td>
+                        <td class="col-9">{{$akun->email }}</td>
                     </tr>
                     <tr>
                         <th class="text-right col-3">Nama :</th>
-                        <td class="col-9">{{$akun->nama }}</td>
+                        <td class="col-9">{{$akun->biodata->nama }}</td>
                     </tr>
                     <tr>
                         <th class="text-right col-3">Umur :</th>
-                        <td class="col-9">{{$akun->umur }}</td>
+                        <td class="col-9">{{$akun->biodata->umur }}</td>
                     </tr>
                     <tr>
                         <th class="text-right col-3">Alamat :</th>
-                        <td class="col-9">{{$akun->alamat }}</td>
+                        <td class="col-9">{{$akun->biodata->alamat }}</td>
                     </tr>
                     <tr>
                         <th class="text-right col-3">Gender :</th>
-                        <td class="col-9">{{$akun->gender }}</td>
+                        <td class="col-9">{{$akun->biodata->gender }}</td>
                     </tr>
                 </table>
             </div>

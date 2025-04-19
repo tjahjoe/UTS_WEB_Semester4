@@ -29,10 +29,10 @@
           <p>Data Barang</p>
         </a>
       </li>
-      <li class="nav-header">Data Transaksi</li>
+      <li class="nav-header">Data Pembelian</li>
       <li class="nav-item">
-        <a href="{{ url('/transaksi') }}" class="nav-link {{ ($activeMenu ==
-  'penjualan') ? 'active' : '' }} ">
+        <a href="{{ url('/pembelian') }}" class="nav-link {{ ($activeMenu ==
+  'pembelian') ? 'active' : '' }} ">
           <i class="nav-icon fas fa-cash-register"></i>
           <p>Transaksi Penjualan</p>
         </a>

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AkunController;
 use App\Http\Controllers\BarangController;
+use App\Http\Controllers\PembelianController;
 use App\Http\Controllers\TransaksiController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 // Route::get('/', function () {
 //     // return view('welcome');
 // });
-
+Route::get('/', [PembelianController::class, 'tes']);
 // Route::get('/', [BarangController::class, 'index']);
 Route::group(['prefix' => 'akun'], function(){
     Route::get('/', [AkunController::class, 'index']);
@@ -45,16 +46,16 @@ Route::group(['prefix' => 'barang'], function(){
     Route::delete('/{id}/hapus_data', [BarangController::class, 'delete_hapus_data']);
 });
 
-Route::group(['prefix' => 'transaksi'], function(){
-    Route::get('/', [TransaksiController::class, 'index']);
-    Route::post('/list', [TransaksiController::class, 'list']);
-    Route::get('/{id}/detail_data', [TransaksiController::class, 'get_detail_data']);
-    Route::get('/tambah_data', [TransaksiController::class, 'get_tambah_data']);
-    Route::post('/tambah_data', [TransaksiController::class, 'post_tambah_data']);
-    Route::get('/{id}/edit_data', [TransaksiController::class, 'get_edit_data']);
-    Route::put('/{id}/edit_data', [TransaksiController::class, 'put_edit_data']);
-    Route::get('/{id}/hapus_data', [TransaksiController::class, 'get_hapus_data']);
-    Route::delete('/{id}/hapus_data', [TransaksiController::class, 'delete_hapus_data']);
+Route::group(['prefix' => 'pembelian'], function(){
+    Route::get('/', [PembelianController::class, 'index']);
+    Route::post('/list', [PembelianController::class, 'list']);
+    Route::get('/{id}/detail_data', [PembelianController::class, 'get_detail_data']);
+    Route::get('/tambah_data', [PembelianController::class, 'get_tambah_data']);
+    Route::post('/tambah_data', [PembelianController::class, 'post_tambah_data']);
+    Route::get('/{id}/edit_data', [PembelianController::class, 'get_edit_data']);
+    Route::put('/{id}/edit_data', [PembelianController::class, 'put_edit_data']);
+    Route::get('/{id}/hapus_data', [PembelianController::class, 'get_hapus_data']);
+    Route::delete('/{id}/hapus_data', [PembelianController::class, 'delete_hapus_data']);
 });
 
 // Route::group(['prefix' => 'barang'], function(){

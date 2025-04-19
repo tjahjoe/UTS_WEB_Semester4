@@ -13,16 +13,15 @@ class TransaksiModel extends Model
     protected $table = 'transaksi';
 
     protected $primaryKey = 'id_transaksi';
-    protected $fillable = ['id_akun', 'id_barang', 'jumlah_beli', 'tanggal_transaksi', 'status'];
-
-    public function akun(): BelongsTo
-    {
-        return $this->belongsTo(AkunModel::class, 'id_akun', 'id_akun');
-    }
+    protected $fillable = ['id_pembelian', 'id_barang', 'jumlah_beli', 'tanggal_transaksi', 'status'];
 
     public function barang(): BelongsTo
     {
         return $this->belongsTo(BarangModel::class, 'id_barang', 'id_barang');
+    }
+    public function pembelian(): BelongsTo
+    {
+        return $this->belongsTo(PembelianModel::class, 'id_pembelian', 'id_pembelian');
     }
 
 }
