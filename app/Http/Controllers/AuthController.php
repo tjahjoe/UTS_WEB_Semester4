@@ -1,5 +1,6 @@
 <?php
 namespace App\Http\Controllers;
+use App\Models\AkunModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
@@ -18,31 +19,38 @@ class AuthController extends Controller
 
     public function post_login(Request $request)
     {
-        // Login dan simpan session pengguna jika berhasil
+        // Hanya tangani permintaan AJAX atau JSON
         if ($request->ajax() || $request->wantsJson()) {
-            // Mendapatkan email dan password dari request
-            $credentials = $request->only('email', 'password');
-
-            // Mencoba melakukan login dengan kredensial yang diberikan
-            if (Auth::attempt($credentials)) {
-                // Jika login berhasil, kirimkan response JSON dengan status true dan redirect URL
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Login Berhasil',
-                    'redirect' => url('/')
-                ]);
+    
+            // Ambil status akun berdasarkan email
+            $akun = AkunModel::where('email', $request['email'])->first();
+    
+            // Cek apakah akun ditemukan dan statusnya aktif
+            if ($akun && $akun->status === 'aktif') {
+                // Ambil email dan password dari request
+                $credentials = $request->only('email', 'password');
+    
+                // Coba login dengan kredensial tersebut
+                if (Auth::attempt($credentials)) {
+                    return response()->json([
+                        'status' => true,
+                        'message' => 'Login Berhasil',
+                        'redirect' => url('/')
+                    ]);
+                }
             }
-
-            // Jika login gagal, kirimkan response JSON dengan status false
+    
+            // Jika status tidak aktif atau login gagal
             return response()->json([
                 'status' => false,
-                'message' => 'Login Gagal'
+                'message' => 'Login Gagal: Email, password, atau status akun tidak valid.'
             ]);
         }
-
-        // Jika bukan request ajax atau json, redirect ke halaman login
-        return redirect('login');
+    
+        // Jika bukan request AJAX/JSON
+        abort(403, 'Unauthorized action.');
     }
+    
 
     public function get_logout(Request $request)
     {
