@@ -1,4 +1,4 @@
-@empty($pembelian)
+@empty($barang)
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -6,90 +6,69 @@
 
                 <button type="button" class="close" data-dismiss="modal" aria- label="Close"><span
                         aria-hidden="true">&times;</span></button>
-
             </div>
             <div class="modal-body">
                 <div class="alert alert-danger">
                     <h5><i class="icon fas fa-ban"></i> Kesalahan!!!</h5>
                     Data yang anda cari tidak ditemukan
                 </div>
-                <a href="{{ url('/pembelian') }}" class="btn btn-warning">Kembali</a>
+                <a href="{{ url('/barang') }}" class="btn btn-warning">Kembali</a>
             </div>
         </div>
     </div>
 @else
-
-    <form action="{{ url('/pembelian/' . $pembelian->id_pembelian . '/hapus_data') }}" method="POST" id="form-delete">
+    <form action="{{ url('/barang/' . $barang->id_barang . '/edit_data') }}" method="POST" id="form-edit">
         @csrf
-        @method('DELETE')
+        @method('PUT')
         <div id="modal-master" class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Hapus Data Pembelian</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Data</h5>
 
                     <button type="button" class="close" data-dismiss="modal" aria- label="Close"><span
                             aria-hidden="true">&times;</span></button>
 
                 </div>
                 <div class="modal-body">
-                    <div class="alert alert-warning">
-                        <h5><i class="icon fas fa-ban"></i> Konfirmasi !!!</h5>
-                        Apakah Anda ingin menghapus data seperti di bawah ini?
+                    <div class="form-group">
+                        <label>Nama</label>
+                        <input value="{{ $barang->nama }}" type="text" name="nama" id="nama" class="form-control"
+                            required>
+                        <small id="error-nama" class="error-text form-text text-danger"></small>
                     </div>
-                    <table class="table table-sm table-bordered table-striped">
-                    <tr>
-                        <th class="text-right col-3">ID Pembelian :</th>
-                        <td class="col-9">{{ $pembelian->id_pembelian }}</td>
-                    </tr>
-                    <tr>
-                        <th class="text-right col-3">Status :</th>
-                        <td class="col-9">{{ $pembelian->status }}</td>
-                    </tr>
-                    <tr>
-                        <th class="text-right col-3">Email :</th>
-                        <td class="col-9">{{ $pembelian->akun->email }}</td>
-                    </tr>
-                    <tr>
-                        <th class="text-right col-3 align-top" rowspan="{{ count($pembelian->transaksi) + 2 }}">Barang :
-                        </th>
-                        <td class="col-9 p-0">
-                            <table class="table table-sm table-bordered table-striped">
-                                <thead style="background-color: silver;">
-                                    <tr>
-                                        <th>ID Barang</th>
-                                        <th>Nama Barang</th>
-                                        <th>Harga</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($pembelian->transaksi as $transaksi)
-                                        <tr>
-                                            <td>{{ $transaksi->id_barang }}</td>
-                                            <td>{{ $transaksi->barang->nama ?? '-' }}</td>
-                                            <td>{{ $transaksi->harga }}</td>
-                                        </tr>
-                                    @endforeach
-                                    <tr>
-                                        <td colspan="2" class="text-right"><strong>Total :</strong></td>
-                                        <td><strong>{{ $pembelian->total }}</strong></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
+                    <div class="form-group">
+                        <label>Harga</label>
+                        <input value="{{ $barang->harga }}" type="text" name="harga" id="harga" class="form-control"
+                            required>
+                        <small id="error-harga" class="error-text form-text text-danger"></small>
+                    </div>
+                    <div class="form-group">
+                        <label>Stok</label>
+                        <input value="{{ $barang->stok }}" type="text" name="stok" id="stok" class="form-control" required>
+                        <small id="error-stok" class="error-text form-text text-danger"></small>
+                    </div>
+                    <div class="form-group">
+                        <label>Deskripsi</label>
+                        <input value="{{ $barang->deskripsi }}" type="text" name="deskripsi" id="deskripsi" class="form-control"
+                            required>
+                        <small id="error-deskripsi" class="error-text form-text text-danger"></small>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" data-dismiss="modal" class="btn btn-warning">Batal</button>
-                    <button type="submit" class="btn btn-primary">Ya, Hapus</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
                 </div>
             </div>
         </div>
     </form>
-    <script>
-        $(document).ready(function () {
-            $("#form-delete").validate({
-                rules: {},
+    <script>$(document).ready(function () {
+            $("#form-edit").validate({
+                rules: {
+                    nama: { required: true, minlength: 2, maxlength: 100 },
+                    harga: { required: true, number: true, min: 0.01 },
+                    stok: { required: true, number: true, min: 1 },
+                    deskripsi: { maxlength: 255 }
+                },
                 submitHandler: function (form) {
                     $.ajax({
                         url: form.action,
@@ -103,7 +82,7 @@
                                     title: 'Berhasil',
                                     text: response.message
                                 });
-                                dataPembelian.ajax.reload();
+                                dataBarang.ajax.reload();
                             } else {
                                 $('.error-text').text('');
                                 $.each(response.msgField, function (prefix, val) {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PembelianModel;
 use App\Models\TransaksiModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Validator;
 
@@ -23,7 +24,22 @@ class PembelianController extends Controller
 
         $activeMenu = 'pembelian';
 
-        return view('pembelian.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
+        return view('admin.pembelian.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
+    }
+    public function index_user()
+    {
+        $breadcrumb = (object) [
+            'title' => 'Daftar Pembelian',
+            'list' => ['Home', 'Pembelian']
+        ];
+
+        $page = (object) [
+            'title' => 'Daftar Pembelian yang terdaftar dalam sistem'
+        ];
+
+        $activeMenu = 'pembelian';
+
+        return view('user.pembelian.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
     }
 
     public function list(Request $request)
@@ -46,6 +62,26 @@ class PembelianController extends Controller
             ->rawColumns(['aksi'])
             ->make(true);
     }
+    public function list_user(Request $request)
+    {
+        $user = Auth::user();
+        $query = PembelianModel::with('akun:id_akun,email')
+        -> select('id_akun','id_pembelian', 'status', 'total')
+        -> where('id_akun', $user->id_akun);
+
+        if ($request->id_pembelian) {
+            $query->where('id_pembelian', $request->id_pembelian);
+        }
+
+        return DataTables::of($query)
+            ->addIndexColumn()
+            ->addColumn('aksi', function ($pembelian) {
+                $btn = '<button onclick="modalAction(\'' . url('/pembelian/' . $pembelian->id_pembelian . '/detail_data') . '\')" class="btn btn-info btn-sm">Detail</button> ';
+                return $btn;
+            })
+            ->rawColumns(['aksi'])
+            ->make(true);
+    }
 
     public function get_edit_data(string $id)
     {
@@ -58,7 +94,7 @@ class PembelianController extends Controller
             'status' => ['menunggu', 'diproses', 'selesai', 'gagal']
         ];
 
-        return view('pembelian.edit_data', ['pembelian' => $query, 'option' => $option]);
+        return view('admin.pembelian.edit_data', ['pembelian' => $query, 'option' => $option]);
     }
 
     public function put_edit_data(Request $request, $id)
@@ -105,7 +141,7 @@ class PembelianController extends Controller
         ->where('id_pembelian', $id)
         ->first();
 
-        return view('pembelian.detail_data', ['pembelian' => $query]);
+        return view('admin.pembelian.detail_data', ['pembelian' => $query]);
     }
 
     public function get_hapus_data(string $id)
@@ -115,7 +151,7 @@ class PembelianController extends Controller
         ->where('id_pembelian', $id)
         ->first();
 
-        return view('pembelian.hapus_data', ['pembelian' => $query]);
+        return view('admin.pembelian.hapus_data', ['pembelian' => $query]);
     }
 
         public function delete_hapus_data(Request $request, $id){

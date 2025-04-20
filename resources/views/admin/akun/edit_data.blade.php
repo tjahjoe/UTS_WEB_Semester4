@@ -106,6 +106,7 @@
                     tingkat: { required: true },
                     status: { required: true },
                     email: { required: true, email: true, maxlength: 100 },
+                    password: { minlength: 6, maxlength: 255 },
                     nama: { required: true, minlength: 2, maxlength: 100 },
                     umur: { required: true, number: true, min: 1, max: 150 },
                     alamat: { required: true, minlength: 5 },
@@ -117,7 +118,6 @@
                         type: form.method,
                         data: $(form).serialize(),
                         success: function (response) {
-                            console.log(response.msgfield);
                             if (response.status) {
                                 $('#myModal').modal('hide');
                                 Swal.fire({

@@ -22,7 +22,7 @@ class BarangController extends Controller
 
         $activeMenu = 'barang';
 
-        return view('barang.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
+        return view('admin.barang.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
     }
 
     public function list(Request $request)
@@ -48,7 +48,7 @@ class BarangController extends Controller
 
     public function get_tambah_data()
     {
-        return view('barang.tambah_data');
+        return view('admin.barang.tambah_data');
     }
 
     public function post_tambah_data(Request $request)
@@ -78,7 +78,7 @@ class BarangController extends Controller
     {
         $query = BarangModel::find($id);
 
-        return view('barang.edit_data', ['barang' => $query]);
+        return view('admin.barang.edit_data', ['barang' => $query]);
     }
 
     public function put_edit_data(Request $request, $id)
@@ -128,14 +128,14 @@ class BarangController extends Controller
     public function get_detail_data(string $id)
     {
         $query = BarangModel::find($id);
-        return view('barang.detail_data', ['barang' => $query]);
+        return view('admin.barang.detail_data', ['barang' => $query]);
     }
 
     public function get_hapus_data(string $id)
     {
         $query = BarangModel::where('id_barang', $id)->first();
 
-        return view('barang.hapus_data', ['barang' => $query]);
+        return view('admin.barang.hapus_data', ['barang' => $query]);
     }
 
         public function delete_hapus_data(Request $request, $id){

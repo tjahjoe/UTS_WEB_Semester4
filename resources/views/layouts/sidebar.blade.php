@@ -11,32 +11,83 @@
     </div>
   </div>
   <!-- Sidebar Menu -->
-  <nav class="mt-2">
+  @if(Auth::check() && Auth::user()->tingkat == 'admin')
+    <nav class="mt-2">
     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+      <li class="nav-header">Profil</li>
+      <li class="nav-item">
+      <a href="{{ url('/') }}" class="nav-link {{ ($activeMenu ==
+    'profil') ? 'active' : '' }} ">
+        <i class="nav-icon far fa-user"></i>
+        <p>Profil</p>
+      </a>
+      </li>
       <li class="nav-header">Data Akun</li>
       <li class="nav-item">
-        <a href="{{ url('/akun') }}" class="nav-link {{ ($activeMenu == 'akun') ?
-  'active' : '' }}">
-          <i class="nav-icon far fa-user"></i>
-          <p>Data Akun</p>
-        </a>
+      <a href="{{ url('/akun') }}" class="nav-link {{ ($activeMenu == 'akun') ?
+    'active' : '' }}">
+        <i class="nav-icon far fa-list-alt"></i>
+        <p>Data Akun</p>
+      </a>
       </li>
       <li class="nav-header">Data Barang</li>
       <li class="nav-item">
-        <a href="{{ url('/barang') }}" class="nav-link {{ ($activeMenu ==
-  'barang') ? 'active' : '' }} ">
-          <i class="nav-icon far fa-list-alt"></i>
-          <p>Data Barang</p>
-        </a>
+      <a href="{{ url('/barang') }}" class="nav-link {{ ($activeMenu ==
+    'barang') ? 'active' : '' }} ">
+        <i class="nav-icon far fa-list-alt"></i>
+        <p>Data Barang</p>
+      </a>
       </li>
       <li class="nav-header">Data Pembelian</li>
       <li class="nav-item">
-        <a href="{{ url('/pembelian') }}" class="nav-link {{ ($activeMenu ==
-  'pembelian') ? 'active' : '' }} ">
-          <i class="nav-icon fas fa-cash-register"></i>
-          <p>Data Pembelian</p>
-        </a>
+      <a href="{{ url('/pembelian') }}" class="nav-link {{ ($activeMenu ==
+    'pembelian') ? 'active' : '' }} ">
+        <i class="nav-icon fas fa-cash-register"></i>
+        <p>Data Pembelian</p>
+      </a>
+      </li>
+      <li class="nav-item">
+      <a href="{{ url('/logout') }}" class="nav-link">
+        <i class="nav-icon fas fa-sign-out-alt"></i>
+        <p>Logout</p>
+      </a>
       </li>
     </ul>
-  </nav>
+    </nav>
+  @elseif(Auth::check() && Auth::user()->tingkat == 'user')
+    <nav class="mt-2">
+    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+      <li class="nav-header">Profil</li>
+      <li class="nav-item">
+      <a href="{{ url('/') }}" class="nav-link {{ ($activeMenu ==
+    'profil') ? 'active' : '' }} ">
+        <i class="nav-icon far fa-user"></i>
+        <p>Profil</p>
+      </a>
+      </li>
+      <li class="nav-header">Data Barang</li>
+      <li class="nav-item">
+      <a href="{{ url('user/transaksi') }}" class="nav-link {{ ($activeMenu ==
+    'barang') ? 'active' : '' }} ">
+        <i class="nav-icon far fa-list-alt"></i>
+        <p>Data Barang</p>
+      </a>
+      </li>
+      <li class="nav-header">Data Pembelian</li>
+      <li class="nav-item">
+      <a href="{{ url('user/pembelian') }}" class="nav-link {{ ($activeMenu ==
+    'pembelian') ? 'active' : '' }} ">
+        <i class="nav-icon fas fa-cash-register"></i>
+        <p>Data Pembelian</p>
+      </a>
+      </li>
+      <li class="nav-item">
+      <a href="{{ url('/logout') }}" class="nav-link">
+        <i class="nav-icon fas fa-sign-out-alt"></i>
+        <p>Logout</p>
+      </a>
+      </li>
+    </ul>
+    </nav>
+  @endif
 </div>

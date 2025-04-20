@@ -1,4 +1,4 @@
-@empty($pembelian)
+@empty($akun)
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -12,12 +12,12 @@
                     <h5><i class="icon fas fa-ban"></i> Kesalahan!!!</h5>
                     Data yang anda cari tidak ditemukan
                 </div>
-                <a href="{{ url('/pembelian') }}" class="btn btn-warning">Kembali</a>
+                <a href="{{ url('/akun') }}" class="btn btn-warning">Kembali</a>
             </div>
         </div>
     </div>
 @else
-    <form action="{{ url('/pembelian/' . $pembelian->id_pembelian . '/edit_data') }}" method="POST" id="form-edit">
+    <form action="{{ url('/' . $akun->id_akun . '/edit_profil') }}" method="POST" id="form-edit">
         @csrf
         @method('PUT')
         <div id="modal-master" class="modal-dialog modal-lg" role="document">
@@ -30,54 +30,38 @@
 
                 </div>
                 <div class="modal-body">
-                    <table class="table table-sm table-bordered table-striped">
-                        <tr>
-                            <th class="text-right col-3">ID Pembelian :</th>
-                            <td class="col-9">{{ $pembelian->id_pembelian }}</td>
-                        </tr>
-                        <tr>
-                            <th class="text-right col-3">Status :</th>
-                            <td class="col-9">{{ $pembelian->status }}</td>
-                        </tr>
-                        <tr>
-                            <th class="text-right col-3">Email :</th>
-                            <td class="col-9">{{ $pembelian->akun->email }}</td>
-                        </tr>
-                        <tr>
-                            <th class="text-right col-3 align-top" rowspan="{{ count($pembelian->transaksi) + 2 }}">Barang :
-                            </th>
-                            <td class="col-9 p-0">
-                                <table class="table table-sm table-bordered table-striped">
-                                    <thead style="background-color: silver;">
-                                        <tr>
-                                            <th>ID Barang</th>
-                                            <th>Nama Barang</th>
-                                            <th>Harga</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($pembelian->transaksi as $transaksi)
-                                            <tr>
-                                                <td>{{ $transaksi->id_barang }}</td>
-                                                <td>{{ $transaksi->barang->nama ?? '-' }}</td>
-                                                <td>{{ $transaksi->harga }}</td>
-                                            </tr>
-                                        @endforeach
-                                        <tr>
-                                            <td colspan="2" class="text-right"><strong>Total :</strong></td>
-                                            <td><strong>{{ $pembelian->total }}</strong></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
                     <div class="form-group">
-                        <label>Status Pembelian</label>
-                        <select name="status" id="status" class="form-control" required>
-                            <option value="">- Pilih Status -</option>
-                            @foreach($option['status'] as $opt)
-                                <option {{ ($opt == $pembelian->status) ? 'selected' : '' }} value="{{ $opt }}">
+                        <label>Email</label>
+                        <input value="{{ $akun->email }}" type="email" name="email" id="email" class="form-control" required>
+                        <small id="error-email" class="error-text form-text text-danger"></small>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input value="" type="password" name="password" id="password" class="form-control">
+                        <small class="form-text text-muted">Abaikan jika tidak ingin ubah password</small>
+                        <small id="error-password" class="error-text form-text text-danger"></small>
+                    </div>
+                    <div class="form-group">
+                        <label>Nama</label>
+                        <input value="{{ $akun->biodata->nama }}" type="text" name="nama" id="nama" class="form-control" required>
+                        <small id="error-nama" class="error-text form-text text-danger"></small>
+                    </div>
+                    <div class="form-group">
+                        <label>Umur</label>
+                        <input value="{{ $akun->biodata->umur }}" type="text" name="umur" id="umur" class="form-control" required>
+                        <small id="error-umur" class="error-text form-text text-danger"></small>
+                    </div>
+                    <div class="form-group">
+                        <label>Alamat</label>
+                        <input value="{{ $akun->biodata->alamat }}" type="text" name="alamat" id="alamat" class="form-control" required>
+                        <small id="error-alamat" class="error-text form-text text-danger"></small>
+                    </div>
+                    <div class="form-group">
+                        <label>Gender Pengguna</label>
+                        <select name="gender" id="gender" class="form-control" required>
+                            <option value="">- Pilih Gender -</option>
+                            @foreach($option['gender'] as $opt)
+                                <option {{ ($opt == $akun->biodata->gender) ? 'selected' : '' }} value="{{ $opt }}">
                                     {{ $opt }}
                                 </option>
                             @endforeach
@@ -95,7 +79,12 @@
     <script>$(document).ready(function () {
             $("#form-edit").validate({
                 rules: {
-                    status: { required: true }
+                    email: { required: true, email: true, maxlength: 100 },
+                    password: { minlength: 6, maxlength: 255 },
+                    nama: { required: true, minlength: 2, maxlength: 100 },
+                    umur: { required: true, number: true, min: 1, max: 150 },
+                    alamat: { required: true, minlength: 5 },
+                    gender: { required: true }
                 },
                 submitHandler: function (form) {
                     $.ajax({
@@ -103,7 +92,6 @@
                         type: form.method,
                         data: $(form).serialize(),
                         success: function (response) {
-                            console.log(response.msgfield);
                             if (response.status) {
                                 $('#myModal').modal('hide');
                                 Swal.fire({
@@ -111,7 +99,7 @@
                                     title: 'Berhasil',
                                     text: response.message
                                 });
-                                dataPembelian.ajax.reload();
+                                dataAkun.ajax.reload();
                             } else {
                                 $('.error-text').text('');
                                 $.each(response.msgField, function (prefix, val) {

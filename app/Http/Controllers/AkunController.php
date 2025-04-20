@@ -8,6 +8,8 @@ use Yajra\DataTables\DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+
 
 class AkunController extends Controller
 {
@@ -24,13 +26,16 @@ class AkunController extends Controller
 
         $activeMenu = 'akun';
 
-        return view('akun.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
+        return view('admin.akun.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
+        // return response()->json(Auth::user()->id_akun);
     }
 
     public function list(Request $request)
     {
+        $user = Auth::user();
         $query = AkunModel::with('biodata:id_akun,nama')
-            ->select('akun.id_akun', 'email', 'tingkat', 'status');
+            ->select('id_akun', 'email', 'tingkat', 'status')
+            ->where('id_akun', '!=', $user->id_akun);
 
         if ($request->id_akun) {
             $query->where('id_akun', $request->id_akun);
@@ -48,15 +53,117 @@ class AkunController extends Controller
             ->make(true);
     }
 
-
-    public function get_tambah_data()
+    public function get_profil()
     {
+        $user = Auth::user();
+        $query = AkunModel::with('biodata:id_akun,nama,umur,alamat,gender')
+        ->select('akun.id_akun', 'email', 'tingkat', 'status')
+        ->where('akun.id_akun', $user->id_akun)
+        ->first();
+
+        $breadcrumb = (object) [
+            'title' => 'Profil',
+            'list' => ['Home', 'Profil']
+        ];
+        $page = (object) [
+            'title' => 'Data diri anda'
+        ];
+
+        $activeMenu = 'profil';
+
+        return view('profil.index', ['breadcrumb' => $breadcrumb, 'akun' => $query, 'page' => $page, 'activeMenu' => $activeMenu]);
+    }
+
+    public function list_data_profil($id){
+        $query = AkunModel::with('biodata:id_akun,nama,umur,alamat,gender')
+        ->select('akun.id_akun', 'email', 'tingkat', 'status')
+        ->where('akun.id_akun', $id)
+        ->first();
+
+        $data = [
+            ['Field' => 'Email', 'Data' => $query->email],
+            ['Field' => 'Tingkat', 'Data' => ucfirst($query->tingkat)],
+            ['Field' => 'Status', 'Data' => ucfirst($query->status)],
+            ['Field' => 'Nama', 'Data' => $query->biodata->nama ?? '-'],
+            ['Field' => 'Umur', 'Data' => ($query->biodata->umur ?? '-') . ' tahun'],
+            ['Field' => 'Alamat', 'Data' => $query->biodata->alamat ?? '-'],
+            ['Field' => 'Gender', 'Data' => $query->biodata->gender == 'L' ? 'Laki-laki' : ($query->biodata->gender == 'P' ? 'Perempuan' : '-')],
+        ];
+    
+        return response()->json(['data' => $data]);
+    }
+
+    public function get_edit_profil(string $id)
+    {
+        $query = AkunModel::with('biodata:id_akun,nama,umur,alamat,gender')
+            ->select('akun.id_akun', 'email', 'tingkat', 'status')
+            ->where('akun.id_akun', $id)
+            ->first();
+
         $option = [
             'tingkat' => ['admin', 'user'],
+            'status' => ['aktif', 'nonaktif'],
             'gender' => ['L', 'P'],
         ];
 
-        return view('akun.tambah_data')->with('option', $option);
+        return view('profil.edit_data', ['akun' => $query, 'option' => $option]);
+    }
+
+    public function put_edit_profil(Request $request, $id)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'email' => 'required|email|max:100|unique:akun,email,' . $id . ',id_akun',
+                'password' => 'nullable|min:6|max:255',
+                'nama' => 'required|max:100',
+                'umur' => 'required|integer|min:1|max:150',
+                'alamat' => 'required',
+                'gender' => 'required|in:L,P',
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                \Log::error('Validator gagal:', $validator->errors()->toArray()); // Logging error
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi gagal',
+                    'msgfield' => $validator->errors()
+                ]);
+            }
+
+            $akun = AkunModel::find($id);
+            if ($akun) {
+                if ($request->filled('password')) {
+                    $plainPassword = $request->input('password'); 
+                    $request->request->remove('password');    
+                    $akun->update([
+                        'password' => Hash::make($plainPassword),
+                    ]);
+                }
+                $akun->update([
+                    'email' => $request['email'],
+                ]);
+
+                BiodataModel::where('id_akun', $id)->update([
+                    'id_akun' => $akun->id_akun,
+                    'nama' => $request['nama'],
+                    'umur' => $request['umur'],
+                    'alamat' => $request['alamat'],
+                    'gender' => $request['gender'],
+                ]);
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Data berhasil diupdate'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Data tidak ditemukan'
+                ]);
+            }
+        }
+        return redirect('/');
     }
 
     public function post_tambah_data(Request $request)
@@ -106,7 +213,7 @@ class AkunController extends Controller
             'gender' => ['L', 'P'],
         ];
 
-        return view('akun.edit_data', ['akun' => $query, 'option' => $option]);
+        return view('admin.akun.edit_data', ['akun' => $query, 'option' => $option]);
     }
 
     public function put_edit_data(Request $request, $id)
@@ -136,13 +243,15 @@ class AkunController extends Controller
 
             $akun = AkunModel::find($id);
             if ($akun) {
-                if (!$request->filled('password')) {
-
-                    $request->request->remove('password');
+                if ($request->filled('password')) {
+                    $plainPassword = $request->input('password'); 
+                    $request->request->remove('password');    
+                    $akun->update([
+                        'password' => Hash::make($plainPassword),
+                    ]);
                 }
                 $akun->update([
                     'email' => $request['email'],
-                    'password' => Hash::make($request['password']),
                     'tingkat' => $request['tingkat'],
                     'status' => $request['status'],
                 ]);
@@ -176,7 +285,7 @@ class AkunController extends Controller
             ->where('akun.id_akun', $id)
             ->first();
 
-        return view('akun.detail_data', ['akun' => $query]);
+        return view('admin.akun.detail_data', ['akun' => $query]);
     }
 
     public function get_hapus_data(string $id)
@@ -186,10 +295,11 @@ class AkunController extends Controller
             ->where('akun.id_akun', $id)
             ->first();
 
-        return view('akun.hapus_data', ['akun' => $query]);
+        return view('admin.akun.hapus_data', ['akun' => $query]);
     }
 
-        public function delete_hapus_data(Request $request, $id){
+    public function delete_hapus_data(Request $request, $id)
+    {
         if ($request->ajax() || $request->wantsJson()) {
             $akun = AkunModel::find($id);
             if ($akun) {

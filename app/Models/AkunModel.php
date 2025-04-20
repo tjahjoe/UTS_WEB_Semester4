@@ -23,4 +23,8 @@ class AkunModel extends Authenticatable
     {
         return $this->hasOne(BiodataModel::class, 'id_akun', 'id_akun');
     }
+
+    public function hasTingkat($tingkat):bool{
+        return $this->tingkat == $tingkat;
+    }
 }
