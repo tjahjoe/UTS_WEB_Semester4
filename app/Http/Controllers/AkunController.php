@@ -34,8 +34,8 @@ class AkunController extends Controller
     {
         $user = Auth::user();
         $query = AkunModel::with('biodata:id_akun,nama')
-        ->select('akun.id_akun', 'email', 'tingkat', 'status')
-        ->where('akun.id_akun', '!=', $user->id_akun);
+            ->select('akun.id_akun', 'email', 'tingkat', 'status')
+            ->where('akun.id_akun', '!=', $user->id_akun);
 
         if ($request->id_akun) {
             $query->where('id_akun', $request->id_akun);
@@ -57,9 +57,9 @@ class AkunController extends Controller
     {
         $user = Auth::user();
         $query = AkunModel::with('biodata:id_akun,nama,umur,alamat,gender')
-        ->select('akun.id_akun', 'email', 'tingkat', 'status')
-        ->where('akun.id_akun', $user->id_akun)
-        ->first();
+            ->select('akun.id_akun', 'email', 'tingkat', 'status')
+            ->where('akun.id_akun', $user->id_akun)
+            ->first();
 
         $breadcrumb = (object) [
             'title' => 'Profil',
@@ -74,11 +74,12 @@ class AkunController extends Controller
         return view('profil.index', ['breadcrumb' => $breadcrumb, 'akun' => $query, 'page' => $page, 'activeMenu' => $activeMenu]);
     }
 
-    public function list_data_profil($id){
+    public function list_data_profil($id)
+    {
         $query = AkunModel::with('biodata:id_akun,nama,umur,alamat,gender')
-        ->select('akun.id_akun', 'email', 'tingkat', 'status')
-        ->where('akun.id_akun', $id)
-        ->first();
+            ->select('akun.id_akun', 'email', 'tingkat', 'status')
+            ->where('akun.id_akun', $id)
+            ->first();
 
         $data = [
             ['Field' => 'Email', 'Data' => $query->email],
@@ -89,7 +90,7 @@ class AkunController extends Controller
             ['Field' => 'Alamat', 'Data' => $query->biodata->alamat ?? '-'],
             ['Field' => 'Gender', 'Data' => $query->biodata->gender == 'L' ? 'Laki-laki' : ($query->biodata->gender == 'P' ? 'Perempuan' : '-')],
         ];
-    
+
         return response()->json(['data' => $data]);
     }
 
@@ -134,8 +135,8 @@ class AkunController extends Controller
             $akun = AkunModel::find($id);
             if ($akun) {
                 if ($request->filled('password')) {
-                    $plainPassword = $request->input('password'); 
-                    $request->request->remove('password');    
+                    $plainPassword = $request->input('password');
+                    $request->request->remove('password');
                     $akun->update([
                         'password' => Hash::make($plainPassword),
                     ]);
@@ -164,6 +165,17 @@ class AkunController extends Controller
             }
         }
         return redirect('/');
+    }
+
+    public function get_tambah_data()
+    {
+        $option = [
+            'tingkat' => ['admin', 'user'],
+
+            'gender' => ['L', 'P'],
+        ];
+
+        return view('akun.tambah_data')->with('option', $option);
     }
 
     public function post_tambah_data(Request $request)
@@ -244,8 +256,8 @@ class AkunController extends Controller
             $akun = AkunModel::find($id);
             if ($akun) {
                 if ($request->filled('password')) {
-                    $plainPassword = $request->input('password'); 
-                    $request->request->remove('password');    
+                    $plainPassword = $request->input('password');
+                    $request->request->remove('password');
                     $akun->update([
                         'password' => Hash::make($plainPassword),
                     ]);
@@ -277,6 +289,7 @@ class AkunController extends Controller
         }
         return redirect('/');
     }
+
 
     public function get_detail_data(string $id)
     {
