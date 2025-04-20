@@ -136,7 +136,7 @@ class PembelianController extends Controller
 
     public function get_detail_data(string $id)
     {
-        $query = PembelianModel::with(['akun:id_akun,email','transaksi:id_pembelian,id_barang,harga', 'transaksi.barang:id_barang,nama'])
+        $query = PembelianModel::with(['akun:id_akun,email','transaksi:id_pembelian,id_barang,harga,jumlah_beli', 'transaksi.barang:id_barang,nama'])
         ->select('id_akun','id_pembelian', 'status', 'total')
         ->where('id_pembelian', $id)
         ->first();
