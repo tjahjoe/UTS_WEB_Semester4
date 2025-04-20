@@ -10,13 +10,13 @@ class BarangModel extends Model
 {
     use HasFactory;
 
-    protected $table = 'barang';
-    protected $primaryKey = 'id_barang';
-    protected $fillable = ['nama', 'harga', 'stok', 'deskripsi'];
+    protected $table = 'barang';  // Menentukan nama tabel yang digunakan oleh model
+    protected $primaryKey = 'id_barang';  // Menentukan primary key tabel
+    protected $fillable = ['nama', 'harga', 'stok', 'deskripsi'];  // Kolom yang dapat diisi massal (mass assignable)
 
+    // Relasi dengan model Transaksi (One to Many)
     public function transaksi(): HasMany
     {
-        return $this->hasMany(TransaksiModel::class, 'id_barang', 'id_barang');
+        return $this->hasMany(TransaksiModel::class, 'id_barang', 'id_barang');  // Relasi satu ke banyak antara Barang dan Transaksi
     }
-
 }

@@ -11,20 +11,24 @@ class AkunModel extends Authenticatable
 {
     use HasFactory;
 
-    protected $table = 'akun';
-    protected $primaryKey = 'id_akun';
-    protected $fillable = ['email', 'password', 'status', 'tingkat'];
+    protected $table = 'akun';  // Menentukan nama tabel yang digunakan oleh model
+    protected $primaryKey = 'id_akun';  // Menentukan primary key tabel
+    protected $fillable = ['email', 'password', 'status', 'tingkat'];  // Kolom yang dapat diisi massal (mass assignable)
 
-    protected $hidden = ['password'];
+    protected $hidden = ['password'];  // Menyembunyikan kolom password agar tidak tampil dalam array/JSON
 
-    protected $casts = ['password' => 'hashed'];
+    protected $casts = ['password' => 'hashed'];  // Mengatur kolom password agar selalu di-hash
 
+    // Relasi dengan model Biodata (One to One)
     public function biodata(): HasOne
     {
-        return $this->hasOne(BiodataModel::class, 'id_akun', 'id_akun');
+        return $this->hasOne(BiodataModel::class, 'id_akun', 'id_akun');  // Relasi satu ke satu antara Akun dan Biodata
     }
 
-    public function hasTingkat($tingkat):bool{
-        return $this->tingkat == $tingkat;
+    // Fungsi untuk memeriksa apakah akun memiliki tingkat tertentu
+    public function hasTingkat($tingkat): bool
+    {
+        return $this->tingkat == $tingkat;  // Mengembalikan true jika tingkat akun sama dengan tingkat yang diberikan
     }
 }
+
