@@ -6,13 +6,15 @@ class AuthController extends Controller
 {
     public function get_login()
     {
-        if (Auth::check()) { // jika sudah login, maka redirect ke halaman home
+        // untuk menentukan halaman awal
+        if (Auth::check()) {
             return redirect('/');
         }
         return view('auth.login');
     }
     public function post_login(Request $request)
     {
+        // login dan disimpan disession
         if ($request->ajax() || $request->wantsJson()) {
             $credentials = $request->only('email', 'password');
             if (Auth::attempt($credentials)) {
@@ -32,6 +34,7 @@ class AuthController extends Controller
     }
     public function get_logout(Request $request)
     {
+        // logout dan menghapus session
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

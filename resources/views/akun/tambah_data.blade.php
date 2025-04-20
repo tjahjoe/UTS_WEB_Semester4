@@ -66,6 +66,7 @@
         $("#form-tambah").validate({
             rules: {
                 tingkat: { required: true },
+                status: { required: true },
                 email: { required: true, email: true, maxlength: 100 },
                 password: { required: true, minlength: 6, maxlength: 255 },
                 nama: { required: true, minlength: 2, maxlength: 100 },

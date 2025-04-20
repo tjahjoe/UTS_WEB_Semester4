@@ -13,6 +13,7 @@ class TransaksiController extends Controller
 {
     public function index()
     {
+        // mempersiapkan data untuk penjualan
         $query = BarangModel::get();
         $breadcrumb = (object) [
             'title' => 'Daftar Barang',
@@ -30,6 +31,7 @@ class TransaksiController extends Controller
 
     public function beli(Request $request)
     {
+        // menambahkan data baru untuk pembelian
         $user = Auth::user();
 
         $pembelian = PembelianModel::create([
@@ -68,7 +70,7 @@ class TransaksiController extends Controller
             return redirect()->back()->with('error', 'Transaksi gagal! Tidak ada item yang dibeli.');
         } else {
             $pembelian->update(['total' => $total]);
-            return redirect()->back()->with('success', 'Transaksi berhasil disimpan');
+            return redirect('/user/pembelian')->with('success', 'Transaksi berhasil disimpan');
         }
     }
 }

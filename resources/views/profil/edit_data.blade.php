@@ -17,7 +17,7 @@
         </div>
     </div>
 @else
-    <form action="{{ url('/' . $akun->id_akun . '/edit_profil') }}" method="POST" id="form-edit">
+    <form action="{{ url('/edit_profil') }}" method="POST" id="form-edit">
         @csrf
         @method('PUT')
         <div id="modal-master" class="modal-dialog modal-lg" role="document">

@@ -23,7 +23,7 @@
         </table>
 
         <div class="mt-3">
-            <button onclick="modalAction('{{ url('/' . $akun->id_akun . '/edit_profil') }}')" class="btn btn-warning">
+            <button onclick="modalAction('{{ url('/edit_profil') }}')" class="btn btn-warning">
                 <i class="fas fa-edit"></i> Edit
             </button>
         </div>
@@ -44,7 +44,7 @@
 
     $(document).ready(function () {
         dataAkun = $('#dataAkun').DataTable({
-            ajax: '{{ url("/" . $akun->id_akun . "/list_data_profil") }}',
+            ajax: '{{ url( "/list_data_profil") }}',
             columns: [
                 { data: 'Field' },
                 { data: 'Data' }

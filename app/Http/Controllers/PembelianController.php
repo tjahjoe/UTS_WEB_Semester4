@@ -13,6 +13,7 @@ class PembelianController extends Controller
 {
     public function index()
     {
+        // mempersiapkan untuk mengakses ke view pembelian.index
         $breadcrumb = (object) [
             'title' => 'Daftar Pembelian',
             'list' => ['Home', 'Pembelian']
@@ -28,6 +29,7 @@ class PembelianController extends Controller
     }
     public function index_user()
     {
+        // clean
         $breadcrumb = (object) [
             'title' => 'Daftar Pembelian',
             'list' => ['Home', 'Pembelian']
@@ -45,7 +47,8 @@ class PembelianController extends Controller
     public function list(Request $request)
     {
         $query = PembelianModel::with('akun:id_akun,email')
-        -> select('pembelian.id_akun','pembelian.id_pembelian', 'pembelian.status', 'pembelian.total');
+        ->select('pembelian.id_akun','pembelian.id_pembelian', 'pembelian.status', 'pembelian.total')
+        ->orderBy('created_at', 'desc');
 
         if ($request->id_pembelian) {
             $query->where('id_pembelian', $request->id_pembelian);
@@ -66,8 +69,9 @@ class PembelianController extends Controller
     {
         $user = Auth::user();
         $query = PembelianModel::with('akun:id_akun,email')
-        -> select('id_akun','id_pembelian', 'status', 'total')
-        -> where('id_akun', $user->id_akun);
+        ->select('id_akun','id_pembelian', 'status', 'total')
+        ->where('id_akun', $user->id_akun)
+        ->orderBy('created_at', 'desc');
 
         if ($request->id_pembelian) {
             $query->where('id_pembelian', $request->id_pembelian);

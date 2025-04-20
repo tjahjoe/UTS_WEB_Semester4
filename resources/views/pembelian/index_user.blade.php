@@ -2,13 +2,13 @@
 @section('content')
     <div class="card card-outline card-primary">
         <div class="card-body">
-            @if (session('success'))
+            <!-- @if (session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
 
             @if (session('error'))
                 <div class="alert alert-danger">{{ session('error') }}</div>
-            @endif
+            @endif -->
             <table class="table table-bordered table-striped table-hover table-sm" id="table_pembelian">
                 <thead>
                     <tr>
@@ -79,6 +79,15 @@
             $('#id_pembelian').on('change', function(){
                 dataPembelian.ajax.reload();
             });
+            @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: '{{ session('success') }}',
+                timer: 2000,
+                showConfirmButton: false
+            });
+            @endif
         });
     </script>
 @endpush

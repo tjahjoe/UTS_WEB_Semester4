@@ -15,6 +15,7 @@ class AkunController extends Controller
 {
     public function index()
     {
+        // mempersiapkan untuk mengakses ke view akun.index
         $breadcrumb = (object) [
             'title' => 'Daftar Akun',
             'list' => ['Home', 'Akun']
@@ -27,11 +28,11 @@ class AkunController extends Controller
         $activeMenu = 'akun';
 
         return view('akun.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
-        // return response()->json(Auth::user()->id_akun);
     }
 
     public function list(Request $request)
     {
+        // mengambil data dari database untuk ditampilkan di akun.index dengan menggunakan DataTables
         $user = Auth::user();
         $query = AkunModel::with('biodata:id_akun,nama')
             ->select('akun.id_akun', 'email', 'tingkat', 'status')
@@ -41,6 +42,7 @@ class AkunController extends Controller
             $query->where('id_akun', $request->id_akun);
         }
 
+        
         return DataTables::of($query)
             ->addIndexColumn()
             ->addColumn('aksi', function ($akun) {
@@ -55,12 +57,7 @@ class AkunController extends Controller
 
     public function get_profil()
     {
-        $user = Auth::user();
-        $query = AkunModel::with('biodata:id_akun,nama,umur,alamat,gender')
-            ->select('akun.id_akun', 'email', 'tingkat', 'status')
-            ->where('akun.id_akun', $user->id_akun)
-            ->first();
-
+        // mempersiapkan untuk mengakses ke view profil.index
         $breadcrumb = (object) [
             'title' => 'Profil',
             'list' => ['Home', 'Profil']
@@ -71,14 +68,16 @@ class AkunController extends Controller
 
         $activeMenu = 'profil';
 
-        return view('profil.index', ['breadcrumb' => $breadcrumb, 'akun' => $query, 'page' => $page, 'activeMenu' => $activeMenu]);
+        return view('profil.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
     }
 
-    public function list_data_profil($id)
+    public function list_data_profil()
     {
+        // mengambil data dari database untuk ditampilkan di profil.index dengan menggunakan DataTables
+        $user = Auth::user();
         $query = AkunModel::with('biodata:id_akun,nama,umur,alamat,gender')
             ->select('akun.id_akun', 'email', 'tingkat', 'status')
-            ->where('akun.id_akun', $id)
+            ->where('akun.id_akun', $user->id_akun)
             ->first();
 
         $data = [
@@ -94,11 +93,13 @@ class AkunController extends Controller
         return response()->json(['data' => $data]);
     }
 
-    public function get_edit_profil(string $id)
+    public function get_edit_profil()
     {
+        // mengambil data untuk diedit lalu diarahkan ke profil.edit_data
+        $user = Auth::user();
         $query = AkunModel::with('biodata:id_akun,nama,umur,alamat,gender')
             ->select('akun.id_akun', 'email', 'tingkat', 'status')
-            ->where('akun.id_akun', $id)
+            ->where('akun.id_akun', $user->id_akun)
             ->first();
 
         $option = [
@@ -110,11 +111,13 @@ class AkunController extends Controller
         return view('profil.edit_data', ['akun' => $query, 'option' => $option]);
     }
 
-    public function put_edit_profil(Request $request, $id)
+    public function put_edit_profil(Request $request)
     {
+        // melakukan perubahan data jika ada data yang diubah
+        $user = Auth::user();
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
-                'email' => 'required|email|max:100|unique:akun,email,' . $id . ',id_akun',
+                'email' => 'required|email|max:100|unique:akun,email,' . $user->id_akun . ',id_akun',
                 'password' => 'nullable|min:6|max:255',
                 'nama' => 'required|max:100',
                 'umur' => 'required|integer|min:1|max:150',
@@ -132,7 +135,7 @@ class AkunController extends Controller
                 ]);
             }
 
-            $akun = AkunModel::find($id);
+            $akun = AkunModel::find($user->id_akun);
             if ($akun) {
                 if ($request->filled('password')) {
                     $plainPassword = $request->input('password');
@@ -145,7 +148,7 @@ class AkunController extends Controller
                     'email' => $request['email'],
                 ]);
 
-                BiodataModel::where('id_akun', $id)->update([
+                BiodataModel::where('id_akun', $user->id_akun)->update([
                     'id_akun' => $akun->id_akun,
                     'nama' => $request['nama'],
                     'umur' => $request['umur'],
@@ -169,6 +172,7 @@ class AkunController extends Controller
 
     public function get_tambah_data()
     {
+        // mempersiapkan apa saja yang menjadi nilai untuk option di akun.tambah_data
         $option = [
             'tingkat' => ['admin', 'user'],
 
@@ -180,7 +184,7 @@ class AkunController extends Controller
 
     public function post_tambah_data(Request $request)
     {
-
+        // menyimpan data baru
         $validated = $request->validate([
             'email' => 'required|email|max:100|unique:akun,email',
             'password' => 'required|min:6|max:255',
@@ -214,6 +218,7 @@ class AkunController extends Controller
 
     public function get_edit_data(string $id)
     {
+        // mengambil data untuk diedit lalu diarahkan ke akun.edit_data
         $query = AkunModel::with('biodata:id_akun,nama,umur,alamat,gender')
             ->select('akun.id_akun', 'email', 'tingkat', 'status')
             ->where('akun.id_akun', $id)
@@ -230,14 +235,14 @@ class AkunController extends Controller
 
     public function put_edit_data(Request $request, $id)
     {
-
+        // melakukan perubahan data jika ada data yang diubah
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
                 'email' => 'required|email|max:100|unique:akun,email,' . $id . ',id_akun',
                 'password' => 'nullable|min:6|max:255',
                 'tingkat' => 'required|in:admin,user',
                 'status' => 'required|in:aktif,nonaktif',
-                'nama' => 'required|max:100',
+                'nama' => 'required|min:2|max:100',
                 'umur' => 'required|integer|min:1|max:150',
                 'alamat' => 'required',
                 'gender' => 'required|in:L,P',
@@ -293,6 +298,7 @@ class AkunController extends Controller
 
     public function get_detail_data(string $id)
     {
+        // menampilkan data yang diambil dari database
         $query = AkunModel::with('biodata:id_akun,nama,umur,alamat,gender')
             ->select('akun.id_akun', 'email', 'tingkat', 'status')
             ->where('akun.id_akun', $id)
@@ -303,6 +309,7 @@ class AkunController extends Controller
 
     public function get_hapus_data(string $id)
     {
+        // menampilkan data dari database yang digunakan untuk konfirmasi penghapusan data
         $query = AkunModel::with('biodata:id_akun,nama,umur,alamat,gender')
             ->select('akun.id_akun', 'email', 'tingkat', 'status')
             ->where('akun.id_akun', $id)
@@ -313,6 +320,7 @@ class AkunController extends Controller
 
     public function delete_hapus_data(Request $request, $id)
     {
+        // menghapus data
         if ($request->ajax() || $request->wantsJson()) {
             $akun = AkunModel::find($id);
             if ($akun) {

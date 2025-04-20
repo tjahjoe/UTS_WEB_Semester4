@@ -22,9 +22,9 @@ Route::pattern('id', '[0-9]+');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [AkunController::class, 'get_profil']);
-    Route::get('/{id}/list_data_profil', [AkunController::class, 'list_data_profil']);
-    Route::get('/{id}/edit_profil', [AkunController::class, 'get_edit_profil']);
-    Route::put('/{id}/edit_profil', [AkunController::class, 'put_edit_profil']);
+    Route::get('/list_data_profil', [AkunController::class, 'list_data_profil']);
+    Route::get('/edit_profil', [AkunController::class, 'get_edit_profil']);
+    Route::put('/edit_profil', [AkunController::class, 'put_edit_profil']);
 
     Route::middleware(['authorize:admin'])->prefix('admin')->group(function () {
         Route::group(['prefix' => 'akun'], function () {
