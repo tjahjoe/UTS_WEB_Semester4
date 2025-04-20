@@ -134,14 +134,7 @@ class PembelianController extends Controller
     public function get_edit_data(string $id)
     {
         // Ambil data pembelian berdasarkan id, sekaligus relasinya:
-        $query = PembelianModel::with([
-            'akun:id_akun,email',                          // relasi ke akun (hanya id & email)
-            'transaksi:id_pembelian,id_barang,harga',      // relasi ke transaksi (id pembelian, barang, harga)
-            'transaksi.barang:id_barang,nama'              // relasi dari transaksi ke barang (id & nama barang)
-        ])
-            ->select('id_akun', 'id_pembelian', 'status', 'total') // kolom utama dari tabel pembelian
-            ->where('id_pembelian', $id)                           // cari berdasarkan id pembelian
-            ->first();                                             // ambil data pertama (karena hanya satu)
+        $query = $this->query_get_detail_data($id);
 
         // Opsi status yang bisa dipilih saat edit
         $option = [
@@ -211,14 +204,7 @@ class PembelianController extends Controller
     public function get_detail_data(string $id)
     {
         // Ambil data pembelian berdasarkan id, termasuk relasinya:
-        $query = PembelianModel::with([
-            'akun:id_akun,email',                              // Relasi ke tabel akun (ambil id & email saja)
-            'transaksi:id_pembelian,id_barang,harga,jumlah_beli', // Relasi ke transaksi (ambil kolom yang dibutuhkan)
-            'transaksi.barang:id_barang,nama'                  // Relasi ke barang dari transaksi (ambil nama barang)
-        ])
-            ->select('id_akun', 'id_pembelian', 'status', 'total') // Pilih kolom dari tabel pembelian
-            ->where('id_pembelian', $id)                           // Filter berdasarkan id_pembelian
-            ->first();                                             // Ambil satu data pertama (karena unik)
+        $query = $this->query_get_detail_data($id);
 
         // Kirim data pembelian ke view detail_data
         return view('pembelian.detail_data', [
@@ -230,14 +216,7 @@ class PembelianController extends Controller
     public function get_hapus_data(string $id)
     {
         // Ambil data pembelian berdasarkan id, sekaligus relasi terkait
-        $query = PembelianModel::with([
-            'akun:id_akun,email',                          // Relasi ke akun (ambil id & email)
-            'transaksi:id_pembelian,id_barang,harga',      // Relasi ke transaksi (ambil id pembelian, barang & harga)
-            'transaksi.barang:id_barang,nama'              // Relasi ke barang dari transaksi (ambil nama barang)
-        ])
-            ->select('id_akun', 'id_pembelian', 'status', 'total') // Kolom dari tabel pembelian
-            ->where('id_pembelian', $id)                           // Filter berdasarkan id pembelian
-            ->first();                                             // Ambil 1 data (karena ID unik)
+        $query = $this->query_get_detail_data($id);
 
         // Kirim data ke view hapus_data, biasanya untuk konfirmasi sebelum dihapus
         return view('pembelian.hapus_data', [
@@ -276,5 +255,19 @@ class PembelianController extends Controller
 
         // Jika tidak terpenuhi kondisi, redirect ke halaman utama (fallback)
         return redirect('/');
+    }
+
+
+    private function query_get_detail_data($id){
+        $query = PembelianModel::with([
+            'akun:id_akun,email',                          // Relasi ke akun (ambil id & email)
+            'transaksi:id_pembelian,id_barang,harga,jumlah_beli',      // Relasi ke transaksi (ambil id pembelian, barang & harga)
+            'transaksi.barang:id_barang,nama'              // Relasi ke barang dari transaksi (ambil nama barang)
+        ])
+            ->select('id_akun', 'id_pembelian', 'status', 'total') // Kolom dari tabel pembelian
+            ->where('id_pembelian', $id)                           // Filter berdasarkan id pembelian
+            ->first();     
+            
+            return $query;
     }
 }

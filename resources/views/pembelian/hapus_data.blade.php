@@ -58,6 +58,7 @@
                                     <tr>
                                         <th>ID Barang</th>
                                         <th>Nama Barang</th>
+                                        <th>Jumlah</th>
                                         <th>Harga</th>
                                     </tr>
                                 </thead>
@@ -66,6 +67,7 @@
                                         <tr>
                                             <td>{{ $transaksi->id_barang }}</td>
                                             <td>{{ $transaksi->barang->nama ?? '-' }}</td>
+                                            <td>{{ $transaksi->jumlah_beli }}</td>
                                             <td>{{ $transaksi->harga }}</td>
                                         </tr>
                                     @endforeach

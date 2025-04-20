@@ -98,11 +98,7 @@ class AkunController extends Controller
         $user = Auth::user();
 
         // Query untuk mengambil data akun dan biodata pengguna berdasarkan akun yang sedang login
-        $query = AkunModel::with('biodata:id_akun,nama,umur,alamat,gender')  // Relasi dengan biodata untuk mendapatkan informasi nama, umur, alamat, dan gender
-            ->select('akun.id_akun', 'email', 'tingkat', 'status')  // Memilih kolom yang akan ditampilkan
-            ->where('akun.id_akun', $user->id_akun)  // Pastikan hanya data akun yang sesuai dengan id_akun pengguna yang sedang login
-            ->first();  // Ambil satu hasil karena hanya untuk pengguna yang sedang login
-
+        $query = $this->query_get_data_table($user->id_akun);
         // Menyiapkan data dalam format array yang akan dikirim ke frontend
         $data = [
             ['Field' => 'Email', 'Data' => $query->email],  // Menampilkan email pengguna
@@ -125,11 +121,7 @@ class AkunController extends Controller
         $user = Auth::user();
 
         // Query untuk mengambil data akun dan biodata pengguna berdasarkan akun yang sedang login
-        $query = AkunModel::with('biodata:id_akun,nama,umur,alamat,gender')  // Relasi dengan biodata untuk mendapatkan informasi nama, umur, alamat, dan gender
-            ->select('akun.id_akun', 'email', 'tingkat', 'status')  // Memilih kolom yang akan ditampilkan dari tabel akun
-            ->where('akun.id_akun', $user->id_akun)  // Pastikan hanya data akun yang sesuai dengan id_akun pengguna yang sedang login
-            ->first();  // Ambil satu hasil karena hanya untuk pengguna yang sedang login
-
+        $query = $this->query_get_data_table($user->id_akun);
         // Menyiapkan opsi yang akan ditampilkan di form edit (untuk dropdown atau select)
         $option = [
             'tingkat' => ['admin', 'user'],  // Opsi tingkat pengguna
@@ -274,10 +266,7 @@ class AkunController extends Controller
     public function get_edit_data(string $id)
     {
         // Mengambil data akun beserta biodatanya berdasarkan ID akun yang diberikan
-        $query = AkunModel::with('biodata:id_akun,nama,umur,alamat,gender')
-            ->select('akun.id_akun', 'email', 'tingkat', 'status')  // Memilih kolom yang akan ditampilkan dari tabel akun
-            ->where('akun.id_akun', $id)  // Menyaring data akun berdasarkan ID yang diberikan
-            ->first();  // Mengambil data akun pertama yang ditemukan
+        $query = $this->query_get_data_table($id);
 
         // Menyediakan opsi untuk tingkat, status, dan gender
         $option = [
@@ -366,10 +355,7 @@ class AkunController extends Controller
     public function get_detail_data(string $id)
     {
         // Menampilkan data yang diambil dari database
-        $query = AkunModel::with('biodata:id_akun,nama,umur,alamat,gender') // Mengambil data akun dan biodata terkait
-            ->select('akun.id_akun', 'email', 'tingkat', 'status') // Mengambil kolom id_akun, email, tingkat, dan status dari tabel akun
-            ->where('akun.id_akun', $id) // Menyaring data berdasarkan id_akun yang diterima sebagai parameter
-            ->first(); // Mengambil hanya satu baris data (karena ID unik)
+        $query = $this->query_get_data_table($id);
 
         // Mengirimkan data ke view 'akun.detail_data'
         return view('akun.detail_data', ['akun' => $query]);
@@ -379,13 +365,18 @@ class AkunController extends Controller
     public function get_hapus_data(string $id)
     {
         // Menampilkan data dari database yang digunakan untuk konfirmasi penghapusan data
-        $query = AkunModel::with('biodata:id_akun,nama,umur,alamat,gender') // Mengambil data akun dan biodata terkait
-            ->select('akun.id_akun', 'email', 'tingkat', 'status') // Mengambil kolom id_akun, email, tingkat, dan status dari tabel akun
-            ->where('akun.id_akun', $id) // Menyaring data berdasarkan id_akun yang diterima sebagai parameter
-            ->first(); // Mengambil hanya satu baris data (karena ID unik)
-
+        $query = $this->query_get_data_table($id);
         // Mengirimkan data ke view 'akun.hapus_data' untuk konfirmasi penghapusan
         return view('akun.hapus_data', ['akun' => $query]);
+    }
+
+    private function query_get_data_table(string $id){
+        $query = AkunModel::with('biodata:id_akun,nama,umur,alamat,gender') // Mengambil data akun dan biodata terkait
+        ->select('akun.id_akun', 'email', 'tingkat', 'status') // Mengambil kolom id_akun, email, tingkat, dan status dari tabel akun
+        ->where('akun.id_akun', $id) // Menyaring data berdasarkan id_akun yang diterima sebagai parameter
+        ->first(); // Mengambil hanya satu baris data (karena ID unik)
+
+        return $query;
     }
 
 
