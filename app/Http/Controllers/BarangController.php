@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BarangModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Validator;
 
@@ -22,7 +23,7 @@ class BarangController extends Controller
 
         $activeMenu = 'barang';
 
-        return view('admin.barang.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
+        return view('barang.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
     }
 
     public function list(Request $request)
@@ -36,9 +37,9 @@ class BarangController extends Controller
         return DataTables::of($query)
             ->addIndexColumn()
             ->addColumn('aksi', function ($barang) {
-                $btn = '<button onclick="modalAction(\'' . url('/barang/' . $barang->id_barang . '/detail_data') . '\')" class="btn btn-info btn-sm">Detail</button> ';
-                $btn .= '<button onclick="modalAction(\'' . url('/barang/' . $barang->id_barang . '/edit_data') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
-                $btn .= '<button onclick="modalAction(\'' . url('/barang/' . $barang->id_barang . '/hapus_data') . '\')" class="btn btn-danger btn-sm">Hapus</button>';
+                $btn = '<button onclick="modalAction(\'' . url('/admin/barang/' . $barang->id_barang . '/detail_data') . '\')" class="btn btn-info btn-sm">Detail</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/admin/barang/' . $barang->id_barang . '/edit_data') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/admin/barang/' . $barang->id_barang . '/hapus_data') . '\')" class="btn btn-danger btn-sm">Hapus</button>';
                 return $btn;
             })
             ->rawColumns(['aksi'])
@@ -48,7 +49,7 @@ class BarangController extends Controller
 
     public function get_tambah_data()
     {
-        return view('admin.barang.tambah_data');
+        return view('barang.tambah_data');
     }
 
     public function post_tambah_data(Request $request)
@@ -78,7 +79,7 @@ class BarangController extends Controller
     {
         $query = BarangModel::find($id);
 
-        return view('admin.barang.edit_data', ['barang' => $query]);
+        return view('barang.edit_data', ['barang' => $query]);
     }
 
     public function put_edit_data(Request $request, $id)
@@ -127,15 +128,18 @@ class BarangController extends Controller
 
     public function get_detail_data(string $id)
     {
+        $user = Auth::user();
         $query = BarangModel::find($id);
-        return view('admin.barang.detail_data', ['barang' => $query]);
+        $tingkat = $user->tingkat;
+
+        return view('barang.detail_data', ['barang' => $query, 'tingkat' => $tingkat]);
     }
 
     public function get_hapus_data(string $id)
     {
         $query = BarangModel::where('id_barang', $id)->first();
 
-        return view('admin.barang.hapus_data', ['barang' => $query]);
+        return view('barang.hapus_data', ['barang' => $query]);
     }
 
         public function delete_hapus_data(Request $request, $id){

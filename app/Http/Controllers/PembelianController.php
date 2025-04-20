@@ -24,7 +24,7 @@ class PembelianController extends Controller
 
         $activeMenu = 'pembelian';
 
-        return view('admin.pembelian.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
+        return view('pembelian.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
     }
     public function index_user()
     {
@@ -39,13 +39,13 @@ class PembelianController extends Controller
 
         $activeMenu = 'pembelian';
 
-        return view('user.pembelian.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
+        return view('pembelian.index_user', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
     }
 
     public function list(Request $request)
     {
         $query = PembelianModel::with('akun:id_akun,email')
-        -> select('id_akun','id_pembelian', 'status', 'total');
+        -> select('pembelian.id_akun','pembelian.id_pembelian', 'pembelian.status', 'pembelian.total');
 
         if ($request->id_pembelian) {
             $query->where('id_pembelian', $request->id_pembelian);
@@ -54,9 +54,9 @@ class PembelianController extends Controller
         return DataTables::of($query)
             ->addIndexColumn()
             ->addColumn('aksi', function ($pembelian) {
-                $btn = '<button onclick="modalAction(\'' . url('/pembelian/' . $pembelian->id_pembelian . '/detail_data') . '\')" class="btn btn-info btn-sm">Detail</button> ';
-                $btn .= '<button onclick="modalAction(\'' . url('/pembelian/' . $pembelian->id_pembelian . '/edit_data') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
-                $btn .= '<button onclick="modalAction(\'' . url('/pembelian/' . $pembelian->id_pembelian . '/hapus_data') . '\')" class="btn btn-danger btn-sm">Hapus</button>';
+                $btn = '<button onclick="modalAction(\'' . url('/admin/pembelian/' . $pembelian->id_pembelian . '/detail_data') . '\')" class="btn btn-info btn-sm">Detail</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/admin/pembelian/' . $pembelian->id_pembelian . '/edit_data') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/admin/pembelian/' . $pembelian->id_pembelian . '/hapus_data') . '\')" class="btn btn-danger btn-sm">Hapus</button>';
                 return $btn;
             })
             ->rawColumns(['aksi'])
@@ -76,7 +76,7 @@ class PembelianController extends Controller
         return DataTables::of($query)
             ->addIndexColumn()
             ->addColumn('aksi', function ($pembelian) {
-                $btn = '<button onclick="modalAction(\'' . url('/pembelian/' . $pembelian->id_pembelian . '/detail_data') . '\')" class="btn btn-info btn-sm">Detail</button> ';
+                $btn = '<button onclick="modalAction(\'' . url('/user/pembelian/' . $pembelian->id_pembelian . '/detail_data') . '\')" class="btn btn-info btn-sm">Detail</button> ';
                 return $btn;
             })
             ->rawColumns(['aksi'])
@@ -94,7 +94,7 @@ class PembelianController extends Controller
             'status' => ['menunggu', 'diproses', 'selesai', 'gagal']
         ];
 
-        return view('admin.pembelian.edit_data', ['pembelian' => $query, 'option' => $option]);
+        return view('pembelian.edit_data', ['pembelian' => $query, 'option' => $option]);
     }
 
     public function put_edit_data(Request $request, $id)
@@ -141,7 +141,7 @@ class PembelianController extends Controller
         ->where('id_pembelian', $id)
         ->first();
 
-        return view('admin.pembelian.detail_data', ['pembelian' => $query]);
+        return view('pembelian.detail_data', ['pembelian' => $query]);
     }
 
     public function get_hapus_data(string $id)
@@ -151,7 +151,7 @@ class PembelianController extends Controller
         ->where('id_pembelian', $id)
         ->first();
 
-        return view('admin.pembelian.hapus_data', ['pembelian' => $query]);
+        return view('pembelian.hapus_data', ['pembelian' => $query]);
     }
 
         public function delete_hapus_data(Request $request, $id){

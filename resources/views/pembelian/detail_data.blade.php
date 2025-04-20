@@ -13,7 +13,7 @@
                     <h5><i class="icon fas fa-ban"></i> Kesalahan!!!</h5>
                     Data yang anda cari tidak ditemukan
                 </div>
-                <a href="{{ url('/pembelian') }}" class="btn btn-warning">Kembali</a>
+                <a href="{{ url('/'.$tingkat.'/pembelian') }}" class="btn btn-warning">Kembali</a>
             </div>
         </div>
     </div>
@@ -50,6 +50,7 @@
                                     <tr>
                                         <th>ID Barang</th>
                                         <th>Nama Barang</th>
+                                        <th>Jumlah</th>
                                         <th>Harga</th>
                                     </tr>
                                 </thead>
@@ -58,11 +59,12 @@
                                         <tr>
                                             <td>{{ $transaksi->id_barang }}</td>
                                             <td>{{ $transaksi->barang->nama ?? '-' }}</td>
+                                            <td>{{ $transaksi->jumlah_beli }}</td>
                                             <td>{{ $transaksi->harga }}</td>
                                         </tr>
                                     @endforeach
                                     <tr>
-                                        <td colspan="2" class="text-right"><strong>Total :</strong></td>
+                                        <td colspan="3" class="text-right"><strong>Total :</strong></td>
                                         <td><strong>{{ $pembelian->total }}</strong></td>
                                     </tr>
                                 </tbody>

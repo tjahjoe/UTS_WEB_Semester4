@@ -24,7 +24,7 @@
       </li>
       <li class="nav-header">Data Akun</li>
       <li class="nav-item">
-      <a href="{{ url('/akun') }}" class="nav-link {{ ($activeMenu == 'akun') ?
+      <a href="{{ url('/admin/akun') }}" class="nav-link {{ ($activeMenu == 'akun') ?
     'active' : '' }}">
         <i class="nav-icon far fa-list-alt"></i>
         <p>Data Akun</p>
@@ -32,7 +32,7 @@
       </li>
       <li class="nav-header">Data Barang</li>
       <li class="nav-item">
-      <a href="{{ url('/barang') }}" class="nav-link {{ ($activeMenu ==
+      <a href="{{ url('/admin/barang') }}" class="nav-link {{ ($activeMenu ==
     'barang') ? 'active' : '' }} ">
         <i class="nav-icon far fa-list-alt"></i>
         <p>Data Barang</p>
@@ -40,7 +40,7 @@
       </li>
       <li class="nav-header">Data Pembelian</li>
       <li class="nav-item">
-      <a href="{{ url('/pembelian') }}" class="nav-link {{ ($activeMenu ==
+      <a href="{{ url('/admin/pembelian') }}" class="nav-link {{ ($activeMenu ==
     'pembelian') ? 'active' : '' }} ">
         <i class="nav-icon fas fa-cash-register"></i>
         <p>Data Pembelian</p>
@@ -67,7 +67,7 @@
       </li>
       <li class="nav-header">Data Barang</li>
       <li class="nav-item">
-      <a href="{{ url('user/transaksi') }}" class="nav-link {{ ($activeMenu ==
+      <a href="{{ url('/user/transaksi') }}" class="nav-link {{ ($activeMenu ==
     'barang') ? 'active' : '' }} ">
         <i class="nav-icon far fa-list-alt"></i>
         <p>Data Barang</p>

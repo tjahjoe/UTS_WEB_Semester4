@@ -25,10 +25,10 @@ class TransaksiController extends Controller
 
         $activeMenu = 'barang';
 
-        return view('user.transaksi.index', ['breadcrumb' => $breadcrumb, 'barang' => $query, 'page' => $page, 'activeMenu' => $activeMenu]);
+        return view('transaksi.index', ['breadcrumb' => $breadcrumb, 'barang' => $query, 'page' => $page, 'activeMenu' => $activeMenu]);
     }
 
-    public function tes(Request $request)
+    public function beli(Request $request)
     {
         $user = Auth::user();
 

@@ -6,69 +6,70 @@
 
                 <button type="button" class="close" data-dismiss="modal" aria- label="Close"><span
                         aria-hidden="true">&times;</span></button>
+
             </div>
             <div class="modal-body">
                 <div class="alert alert-danger">
                     <h5><i class="icon fas fa-ban"></i> Kesalahan!!!</h5>
                     Data yang anda cari tidak ditemukan
                 </div>
-                <a href="{{ url('/barang') }}" class="btn btn-warning">Kembali</a>
+                <a href="{{ url('/admin/barang') }}" class="btn btn-warning">Kembali</a>
             </div>
         </div>
     </div>
 @else
-    <form action="{{ url('/barang/' . $barang->id_barang . '/edit_data') }}" method="POST" id="form-edit">
+
+    <form action="{{ url('/admin/barang/' . $barang->id_barang . '/hapus_data') }}" method="POST" id="form-delete">
         @csrf
-        @method('PUT')
+        @method('DELETE')
         <div id="modal-master" class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit Data</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Hapus Data Barang</h5>
 
                     <button type="button" class="close" data-dismiss="modal" aria- label="Close"><span
                             aria-hidden="true">&times;</span></button>
 
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label>Nama</label>
-                        <input value="{{ $barang->nama }}" type="text" name="nama" id="nama" class="form-control"
-                            required>
-                        <small id="error-nama" class="error-text form-text text-danger"></small>
+                    <div class="alert alert-warning">
+                        <h5><i class="icon fas fa-ban"></i> Konfirmasi !!!</h5>
+                        Apakah Anda ingin menghapus data seperti di bawah ini?
                     </div>
-                    <div class="form-group">
-                        <label>Harga</label>
-                        <input value="{{ $barang->harga }}" type="text" name="harga" id="harga" class="form-control"
-                            required>
-                        <small id="error-harga" class="error-text form-text text-danger"></small>
-                    </div>
-                    <div class="form-group">
-                        <label>Stok</label>
-                        <input value="{{ $barang->stok }}" type="text" name="stok" id="stok" class="form-control" required>
-                        <small id="error-stok" class="error-text form-text text-danger"></small>
-                    </div>
-                    <div class="form-group">
-                        <label>Deskripsi</label>
-                        <input value="{{ $barang->deskripsi }}" type="text" name="deskripsi" id="deskripsi" class="form-control"
-                            required>
-                        <small id="error-deskripsi" class="error-text form-text text-danger"></small>
-                    </div>
+                    <table class="table table-sm table-bordered table-striped">
+                    <tr>
+                        <th class="text-right col-3">ID:</th>
+                        <td class="col-9">{{$barang->id_barang }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-3">Nama:</th>
+                        <td class="col-9">{{$barang->nama }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-3">Harga:</th>
+                        <td class="col-9">{{$barang->harga }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-3">Stok:</th>
+                        <td class="col-9">{{$barang->stok }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-3">Deskripsi:</th>
+                        <td class="col-9">{{$barang->deskripsi }}</td>
+                    </tr>
+                    </table>
                 </div>
                 <div class="modal-footer">
                     <button type="button" data-dismiss="modal" class="btn btn-warning">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="submit" class="btn btn-primary">Ya, Hapus</button>
                 </div>
             </div>
         </div>
     </form>
-    <script>$(document).ready(function () {
-            $("#form-edit").validate({
-                rules: {
-                    nama: { required: true, minlength: 2, maxlength: 100 },
-                    harga: { required: true, number: true, min: 0.01 },
-                    stok: { required: true, number: true, min: 1 },
-                    deskripsi: { maxlength: 255 }
-                },
+    <script>
+        $(document).ready(function () {
+            $("#form-delete").validate({
+                rules: {},
                 submitHandler: function (form) {
                     $.ajax({
                         url: form.action,

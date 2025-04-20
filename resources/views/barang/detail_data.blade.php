@@ -1,4 +1,4 @@
-@empty($akun)
+@empty($barang)
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -13,7 +13,7 @@
                     <h5><i class="icon fas fa-ban"></i> Kesalahan!!!</h5>
                     Data yang anda cari tidak ditemukan
                 </div>
-                <a href="{{ url('/akun') }}" class="btn btn-warning">Kembali</a>
+                <a href="{{ url('/'. $tingkat .'/barang') }}" class="btn btn-warning">Kembali</a>
             </div>
         </div>
     </div>
@@ -30,32 +30,24 @@
             <div class="modal-body">
                 <table class="table table-sm table-bordered table-striped">
                     <tr>
-                        <th class="text-right col-3">Level Pengguna :</th>
-                        <td class="col-9">{{$akun->tingkat }}</td>
+                        <th class="text-right col-3">ID:</th>
+                        <td class="col-9">{{$barang->id_barang }}</td>
                     </tr>
                     <tr>
-                        <th class="text-right col-3">Status:</th>
-                        <td class="col-9">{{$akun->status }}</td>
+                        <th class="text-right col-3">Nama:</th>
+                        <td class="col-9">{{$barang->nama }}</td>
                     </tr>
                     <tr>
-                        <th class="text-right col-3">Email :</th>
-                        <td class="col-9">{{$akun->email }}</td>
+                        <th class="text-right col-3">Harga:</th>
+                        <td class="col-9">{{$barang->harga }}</td>
                     </tr>
                     <tr>
-                        <th class="text-right col-3">Nama :</th>
-                        <td class="col-9">{{$akun->biodata->nama }}</td>
+                        <th class="text-right col-3">Stok:</th>
+                        <td class="col-9">{{$barang->stok }}</td>
                     </tr>
                     <tr>
-                        <th class="text-right col-3">Umur :</th>
-                        <td class="col-9">{{$akun->biodata->umur }}</td>
-                    </tr>
-                    <tr>
-                        <th class="text-right col-3">Alamat :</th>
-                        <td class="col-9">{{$akun->biodata->alamat }}</td>
-                    </tr>
-                    <tr>
-                        <th class="text-right col-3">Gender :</th>
-                        <td class="col-9">{{$akun->biodata->gender }}</td>
+                        <th class="text-right col-3">Deskripsi:</th>
+                        <td class="col-9">{{$barang->deskripsi }}</td>
                     </tr>
                 </table>
             </div>

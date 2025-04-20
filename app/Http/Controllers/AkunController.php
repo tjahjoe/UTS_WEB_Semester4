@@ -26,7 +26,7 @@ class AkunController extends Controller
 
         $activeMenu = 'akun';
 
-        return view('admin.akun.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
+        return view('akun.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
         // return response()->json(Auth::user()->id_akun);
     }
 
@@ -34,8 +34,8 @@ class AkunController extends Controller
     {
         $user = Auth::user();
         $query = AkunModel::with('biodata:id_akun,nama')
-            ->select('id_akun', 'email', 'tingkat', 'status')
-            ->where('id_akun', '!=', $user->id_akun);
+        ->select('akun.id_akun', 'email', 'tingkat', 'status')
+        ->where('akun.id_akun', '!=', $user->id_akun);
 
         if ($request->id_akun) {
             $query->where('id_akun', $request->id_akun);
@@ -44,9 +44,9 @@ class AkunController extends Controller
         return DataTables::of($query)
             ->addIndexColumn()
             ->addColumn('aksi', function ($akun) {
-                $btn = '<button onclick="modalAction(\'' . url('/akun/' . $akun->id_akun . '/detail_data') . '\')" class="btn btn-info btn-sm">Detail</button> ';
-                $btn .= '<button onclick="modalAction(\'' . url('/akun/' . $akun->id_akun . '/edit_data') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
-                $btn .= '<button onclick="modalAction(\'' . url('/akun/' . $akun->id_akun . '/hapus_data') . '\')" class="btn btn-danger btn-sm">Hapus</button>';
+                $btn = '<button onclick="modalAction(\'' . url('/admin/akun/' . $akun->id_akun . '/detail_data') . '\')" class="btn btn-info btn-sm">Detail</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/admin/akun/' . $akun->id_akun . '/edit_data') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/admin/akun/' . $akun->id_akun . '/hapus_data') . '\')" class="btn btn-danger btn-sm">Hapus</button>';
                 return $btn;
             })
             ->rawColumns(['aksi'])
@@ -213,7 +213,7 @@ class AkunController extends Controller
             'gender' => ['L', 'P'],
         ];
 
-        return view('admin.akun.edit_data', ['akun' => $query, 'option' => $option]);
+        return view('akun.edit_data', ['akun' => $query, 'option' => $option]);
     }
 
     public function put_edit_data(Request $request, $id)
@@ -285,7 +285,7 @@ class AkunController extends Controller
             ->where('akun.id_akun', $id)
             ->first();
 
-        return view('admin.akun.detail_data', ['akun' => $query]);
+        return view('akun.detail_data', ['akun' => $query]);
     }
 
     public function get_hapus_data(string $id)
@@ -295,7 +295,7 @@ class AkunController extends Controller
             ->where('akun.id_akun', $id)
             ->first();
 
-        return view('admin.akun.hapus_data', ['akun' => $query]);
+        return view('akun.hapus_data', ['akun' => $query]);
     }
 
     public function delete_hapus_data(Request $request, $id)

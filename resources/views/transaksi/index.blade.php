@@ -1,7 +1,7 @@
 @extends('layouts.template')
 
 @section('content')
-    <form action="{{ url('/user/tes') }}" method="POST">
+    <form action="{{ url('/user/transaksi/beli') }}" method="POST">
         @csrf
         <div class="card">
             <div class="card-header bg-primary text-white">
@@ -36,7 +36,7 @@
                                 </td>
                                 <td>
                                     <button type="button"
-                                        onclick="modalAction('{{ url('/barang/' . $bunga['id_barang'] . '/detail_data') }}')"
+                                        onclick="modalAction('{{ url('/user/barang/' . $bunga['id_barang'] . '/detail_data') }}')"
                                         class="btn btn-info btn-sm">
                                         <i class="fas fa-eye"></i> Detail
                                     </button>

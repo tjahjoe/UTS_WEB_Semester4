@@ -13,13 +13,13 @@
                     <h5><i class="icon fas fa-ban"></i> Kesalahan!!!</h5>
                     Data yang anda cari tidak ditemukan
                 </div>
-                <a href="{{ url('/akun') }}" class="btn btn-warning">Kembali</a>
+                <a href="{{ url('/admin/akun') }}" class="btn btn-warning">Kembali</a>
             </div>
         </div>
     </div>
 @else
 
-    <form action="{{ url('/akun/' . $akun->id_akun . '/hapus_data') }}" method="POST" id="form-delete">
+    <form action="{{ url('/admin/akun/' . $akun->id_akun . '/hapus_data') }}" method="POST" id="form-delete">
         @csrf
         @method('DELETE')
         <div id="modal-master" class="modal-dialog modal-lg" role="document">
